@@ -1,6 +1,6 @@
 {
-  "name": "admin-lte",
-  "description": "Responsive open source admin dashboard and control panel.",
+  "name": "eventspark",
+  "description": "EventSpark dashboard and control panel.",
   "version": "1.0.0-dev",
   "main": "dist/js/adminlte.min.js",
   "scripts": {
@@ -47,15 +47,14 @@
     "control-panel",
     "dashboard"
   ],
-  "homepage": "https://adminlte.io",
   "style": "dist/css/adminlte.css",
   "sass": "src/scss/adminlte.scss",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ColorlibHQ/AdminLTE.git"
+    "url": "git://github.com/ZackZY/EventSpark_web.git"
   },
   "bugs": {
-    "url": "https://github.com/ColorlibHQ/AdminLTE/issues"
+    "url": "https://github.com/ZackZY/EventSpark_web/issues"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.3",
