@@ -1,0 +1,65 @@
+---
+import { faker } from "@faker-js/faker";
+
+interface MyUserProfile {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  joined: string;
+}
+
+/**
+ * Generates an array of user profiles.
+ *
+ * @param limit - The number of user profiles to generate (must be a positive integer).
+ * @returns An array of MyUserProfile objects.
+ */
+export function getUserProfiles(limit: number): MyUserProfile[] {
+  if (!Number.isInteger(limit) || limit <= 0) {
+    throw new Error("Limit must be a positive integer");
+  }
+
+  const mup: MyUserProfile[] = [];
+
+  for (let i = 0; i < limit; i++) {
+    mup.push({
+      id: i + 1,
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      phone: faker.phone.number({ style: "national" }),
+      joined: faker.date.past().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    });
+  }
+
+  return mup;
+}
+
+/**
+ * Deletes a user profile by ID.
+ *
+ * @param profiles - The current array of user profiles.
+ * @param id - The ID of the profile to delete.
+ * @returns A new array of user profiles without the deleted profile.
+ */
+export function deleteUserProfile(
+  profiles: MyUserProfile[],
+  id: number
+): MyUserProfile[] {
+  return profiles.filter((profile) => profile.id !== id);
+}
+---
+
+<!-- <script>
+    // Find our component DOM on the page.
+    const buttons = document.querySelectorAll('[del-button]');
+  
+    // Add event listeners to fire confetti when a button is clicked.
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => console.log('Button clicked!'));
+    });
+</script> -->
