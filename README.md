@@ -6,6 +6,7 @@ This project is used for the frontend development of EventSpark. Follow is the q
 
 1. VS Code
 2. "Astro" extension to be install in VS Code
+3. NodeJS v20 LTS version
 
 ## Environment Prepare
 
