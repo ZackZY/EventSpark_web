@@ -4,39 +4,14 @@ import Footer from "@components/dashboard/_footer.astro";
 import Topbar from "@components/dashboard/_topbar.astro";
 import Sidenav from "@components/dashboard/_sidenav.astro";
 import Scripts from "@components/_scripts.astro";
-import { getUserProfiles } from "../components/faker/fake-data.astro";
+import { getUserProfiles } from "@components/faker/fake-data.astro";
+import Pagefunctions from "@components/organizer-management/pagefunctions.astro";
 
 const title = "Manage Organizers";
 const path = "../../../dist";
-const mainPage = "Admin";
-const page = "admin";
-const userProfiles = getUserProfiles(15);
-
-// import { faker } from "@faker-js/faker";
-
-// interface MyUserProfile {
-//  id: number;
-//  name: string;
-//  email: string;
-//  phone: string;
-//  joined: string;
-// }
-
-// const Ausers: MyUserProfile[] = [];
-
-// for (let i = 0; i < 50; i++) {
-//   Ausers.push({
-//     id: i + 1,
-//     name: faker.person.fullName(), // Call the function to generate a name
-//     email: faker.internet.email(), // Call the function to generate an email
-//     phone: faker.phone.number({ style: 'national' }), // Call the function to generate a phone number
-//     joined: faker.date.past().toLocaleDateString('en-GB', {
-//         day: '2-digit',
-//         month: 'short',
-//         year: 'numeric'
-//       })
-//   });
-// }
+const mainPage = "dashboard";
+const page = "organizer-management";
+const userProfiles = getUserProfiles(10);
 ---
 
 <!doctype html>
@@ -88,7 +63,6 @@ const userProfiles = getUserProfiles(15);
                 <div class="card mb-4">
                   <div class="card-header">
                     <h3 class="card-title">Organizers</h3>
-
                     <div class="card-tools">
                       <ul class="pagination pagination-sm float-end">
                         <li class="page-item">
@@ -139,15 +113,7 @@ const userProfiles = getUserProfiles(15);
                               <td>{data.phone}</td>
                               <td>{data.joined}</td>
                               <td>
-                                <button class="badge text-bg-warning col-5">
-                                  Edit
-                                </button>
-                                <button
-                                  class="badge text-bg-danger col-5"
-                                  del-button
-                                >
-                                  Delete
-                                </button>
+                                <Pagefunctions message={data}/>
                               </td>
                             </tr>
                           ))
