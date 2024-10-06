@@ -28,6 +28,15 @@ npm run dev
 npm run build
 ```
 
+### Run unit test
+
+```bash
+npm run test
+```
+
+#### For Test-Driven-Development (TDD)
+Refer to the first test case: (src/html/components/dashboard/tests/_sidenav.test.ts)
+
 ### Check code style
 
 ```bash

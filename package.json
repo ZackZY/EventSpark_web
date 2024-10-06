@@ -34,7 +34,8 @@
     "watch-css-main": "nodemon --watch src/scss/ --ext scss --exec \"npm-run-all css-lint css-compile\"",
     "watch-css-dist": "nodemon --watch dist/css/ --ext css --ignore \"dist/css/*.rtl.*\" --exec \"npm run css-rtl\"",
     "watch-js-main": "nodemon --watch src/ts/ --ext ts --exec \"npm-run-all js-lint js-compile\"",
-    "watch-assets": "nodemon --watch src/assets/ --exec \"npm run assets\""
+    "watch-assets": "nodemon --watch src/assets/ --exec \"npm run assets\"",
+    "test": "jest"
   },
   "keywords": [
     "css",
@@ -61,6 +62,7 @@
     "@astrojs/mdx": "^3.1.5",
     "@faker-js/faker": "^9.0.0",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/jest": "^29.5.13",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "astro": "^4.15.1",
@@ -77,6 +79,8 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-unicorn": "^52.0.0",
     "fs-extra": "^11.1.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "js-beautify": "^1.15.1",
     "lockfile-lint": "^4.14.0",
     "nodemon": "^3.1.4",
@@ -92,6 +96,7 @@
     "stylelint": "^16.9.0",
     "stylelint-config-twbs-bootstrap": "^14.2.0",
     "terser": "^5.31.6",
+    "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4"
   }
