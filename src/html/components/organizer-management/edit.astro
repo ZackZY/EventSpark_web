@@ -1,0 +1,197 @@
+---
+const { message = ""} = Astro.props;
+---
+
+<edit-func data-message={message}>
+    <button type="button" class="btn btn-primary col-5" data-bs-toggle="modal" data-bs-target="#userModal">Edit</button>
+
+    <!--begin::Edit Modal-->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="userModalLabel">{message.id}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!--begin::Form-->
+            <form class="needs-validation" novalidate>
+              <!--begin::Body-->
+              <div class="card-body">
+                <!--begin::Row-->
+                <div class="row g-3">
+                  <!--begin::Col-->
+                  <div class="col-md-6">
+                    <div class="input-group has-validation">
+                      <span
+                        class="input-group-text"
+                        id="inputGroupPrepend"><b>Name</b></span
+                      >
+                      <input
+                        type="text"
+                        class="form-control msg-name"
+                        id="validationName"
+                        placeholder={message.name}
+                        aria-describedby="inputGroupPrepend"
+                        required
+                      />
+                      <div class="invalid-feedback">
+                        Please input a valid Name.
+                      </div>
+                    </div>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="col-md-6">
+                    <div class="input-group has-validation">
+                      <span
+                        class="input-group-text"
+                        id="inputGroupPrepend"><b>Email</b></span
+                      >
+                      <input
+                        type="text"
+                        class="form-control msg-email"
+                        id="validationEmail"
+                        placeholder={message.email}
+                        aria-describedby="inputGroupPrepend"
+                        required
+                      />
+                      <div class="invalid-feedback">
+                        Please input a valid Email.
+                      </div>
+                    </div>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="col-md-6">
+                    <div class="input-group has-validation">
+                      <span
+                        class="input-group-text"
+                        id="inputGroupPrepend"><b>Contact</b></span
+                      >
+                      <input
+                        type="text"
+                        class="form-control msg-contact"
+                        id="validationCustomContact"
+                        placeholder={message.phone}
+                        aria-describedby="inputGroupPrepend"
+                        required
+                      />
+                      <div class="invalid-feedback">
+                        Please input a valid contact number.
+                      </div>
+                    </div>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="col-md-12">
+                    <fieldset class="row mb-1">
+                      <legend class="col-form-label col-sm-2 pt-0"
+                        >Account Status</legend
+                      >
+                      <div class="col-sm-10">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="gridRadios"
+                            id="gridRadios1"
+                            value="option1"
+                            checked
+                          />
+                          <label class="form-check-label" for="gridRadios1">
+                            Active
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="gridRadios"
+                            id="gridRadios2"
+                            value="option2"
+                          />
+                          <label class="form-check-label" for="gridRadios2">
+                            Inactive
+                          </label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Row-->
+              </div>
+              <!--end::Body-->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+            <!--end::Form-->
+            <!--begin::JavaScript-->
+            <script is:inline>
+              // Example starter JavaScript for disabling form submissions if there are invalid fields
+              (() => {
+                "use strict";
+
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms =
+                  document.querySelectorAll(".needs-validation");
+
+                // Loop over them and prevent submission
+                Array.from(forms).forEach((form) => {
+                  form.addEventListener(
+                    "submit",
+                    (event) => {
+                      if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+
+                      form.classList.add("was-validated");
+                    },
+                    false
+                  );
+                });
+              })();
+            </script>
+            <!--end::JavaScript-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::Edit Modal-->
+</edit-func>
+
+<script>
+    class Editfunction extends HTMLElement {
+      connectedCallback() {
+        // Read the message from the data attribute.
+        const message = JSON.parse(this.dataset.message);
+        const button = this.querySelector('button');
+        button.addEventListener('click', () => {
+          const userModal = document.getElementById('userModal')
+          const modalTitle = userModal.querySelector('.modal-title')
+          const msgName = userModal.querySelector('.msg-name')
+          const msgEmail = userModal.querySelector('.msg-email')
+          const msgContact = userModal.querySelector('.msg-contact')
+
+          modalTitle.textContent = `Editing row number: ${message.id}`
+          msgName.placeholder = `${message.name}`
+          msgEmail.placeholder = `${message.email}`
+          msgContact.placeholder = `${message.phone}`
+
+          const radioActive = userModal.querySelector('#gridRadios1');
+          const radioInactive = userModal.querySelector('#gridRadios2');
+          if (message.status === "Active") {
+            radioActive.checked = true;
+          } else {
+            radioInactive.checked = true;
+          }
+        });
+      }
+    }
+
+    customElements.define('edit-func', Editfunction);
+  </script>

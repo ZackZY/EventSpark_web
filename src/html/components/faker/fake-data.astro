@@ -1,5 +1,5 @@
 ---
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 
 interface MyUserProfile {
   id: number;
@@ -20,10 +20,10 @@ export function getUserProfiles(limit: number): MyUserProfile[] {
     throw new Error("Limit must be a positive integer");
   }
 
-  const mup: MyUserProfile[] = [];
+  let userProfiles: MyUserProfile[] = [];
 
   for (let i = 0; i < limit; i++) {
-    mup.push({
+    userProfiles.push({
       id: i + 1,
       name: faker.person.fullName(),
       email: faker.internet.email(),
@@ -36,30 +36,25 @@ export function getUserProfiles(limit: number): MyUserProfile[] {
     });
   }
 
-  return mup;
+  return userProfiles;
 }
 
-/**
- * Deletes a user profile by ID.
- *
- * @param profiles - The current array of user profiles.
- * @param id - The ID of the profile to delete.
- * @returns A new array of user profiles without the deleted profile.
- */
-export function deleteUserProfile(
-  profiles: MyUserProfile[],
-  id: number
-): MyUserProfile[] {
-  return profiles.filter((profile) => profile.id !== id);
+// Edit a user profile by ID
+// export function editUserProfile(id: number, updatedProfile: Partial<MyUserProfile>): MyUserProfile | undefined {
+//   const index = userProfiles.findIndex(profile => profile.id === id);
+
+//   if (index !== -1) {
+//     userProfiles[index] = { ...userProfiles[index], ...updatedProfile };
+//     return userProfiles[index];
+//   }
+
+//   return undefined; // Profile not found
+// }
+
+// Delete a user profile by ID
+export function deleteUserProfile(id: number): boolean {
+  const initialLength = userProfiles.length;
+  userProfiles = userProfiles.filter(profile => profile.id !== id);
+  return userProfiles.length < initialLength; // Returns true if a profile was deleted
 }
 ---
-
-<!-- <script>
-    // Find our component DOM on the page.
-    const buttons = document.querySelectorAll('[del-button]');
-  
-    // Add event listeners to fire confetti when a button is clicked.
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => console.log('Button clicked!'));
-    });
-</script> -->
