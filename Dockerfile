@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /code
 
@@ -8,6 +8,8 @@ COPY package-lock.json /code/package-lock.json
 RUN npm install
 
 COPY . /code
+
+RUN npm run compile
 
 EXPOSE 3000
 
