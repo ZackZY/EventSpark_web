@@ -16,17 +16,40 @@ Install all dependencies
 npm install
 ```
 
+### Build project
+
+```bash
+npm run build
+```
+
 ### Start project
 
 ```bash
 npm run dev
 ```
 
-### Build project
+#### Start project with Docker
+##### Build Docker image
+```bash
+docker build -t frontend .
+```
+##### Delete previous Docker container (If previously created, you will need to delete the previous container)
+```bash
+docker rm frontend
+```
+##### Run Docker container
+```bash
+docker run -d --name frontend -p 3000:3000 frontend
+```
+
+### Run unit test
 
 ```bash
-npm run build
+npm run test
 ```
+
+#### For Test-Driven-Development (TDD)
+Refer to the first test case: (src/html/components/dashboard/tests/_sidenav.test.ts)
 
 ### Check code style
 

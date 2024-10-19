@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /code
 
@@ -9,4 +9,8 @@ RUN npm install
 
 COPY . /code
 
-CMD ["npm", "run", "dev"]
+RUN npm run compile
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev-docker"]
