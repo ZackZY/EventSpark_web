@@ -1,11 +1,16 @@
 ---
-import { getUserProfiles } from "@components/faker/fake-data.astro";
+// import { getUserProfiles } from "@components/faker/fake-data.astro";
+import { apiUrlHelper } from "../../../config/api.config";
+import { fetchFromApi } from "../../../config/api.config";
 import Edit from "@components/organizer-management/edit.astro";
 import Delete from "@components/organizer-management/delete.astro";
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const userProfiles = getUserProfiles(10);
+const events = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+const mainPage = "organizer-management";
+const page = "main";
+// const userProfiles = getUserProfiles(10);
 ---
 
 <get-func data-message={message}>
@@ -54,7 +59,7 @@ const userProfiles = getUserProfiles(10);
                 </thead>
                 <tbody>
                   {
-                    userProfiles.map((data) => (
+                    events.map((data) => (
                       <tr class="align-middle">
                         <td>{data.id}</td>
                         <td>
@@ -63,14 +68,14 @@ const userProfiles = getUserProfiles(10);
                             alt="Product 1"
                             class="rounded-circle img-size-32 me-2"
                           />
-                          {data.name}
+                          {data.attendeeName}
                         </td>
-                        <td>{data.email}</td>
-                        <td>{data.phone}</td>
-                        <td>{data.joined}</td>
+                        <td>{data.attendeeEmail}</td>
+                        <td>{data.createdAt}</td>
+                        <td>{data.updatedAt}</td>
                         <td>
-                          <Edit message={JSON.stringify(data)}/>
-                          <Delete message={JSON.stringify(data)}/>
+                          <Edit message={JSON.stringify(data)} />
+                          <Delete message={JSON.stringify(data)} />
                         </td>
                       </tr>
                     ))
@@ -90,5 +95,4 @@ const userProfiles = getUserProfiles(10);
   </div>
 </get-func>
 
-<script>
-</script>
+<script></script>
