@@ -1,7 +1,9 @@
 export const apiDomain = 'http://localhost:3001'
 
 export const apiUrlHelper = {
-  listAllEventsAPI: apiDomain + '/events/ListAll'
+  EventsAPI: apiDomain + '/events/events',
+  UsersAPI: apiDomain + '/users/users',
+  EventAttendeesAPI: apiDomain + '/eventAttendees/eventAttendees'
 }
 
 /**
@@ -12,19 +14,20 @@ export const apiUrlHelper = {
  * @returns {Promise<any>} - The JSON response from the API.
  */
 export async function fetchFromApi(url, method, payload = null) {
-  let options = {
+  const options = {
     method: method,
     headers: {
       "Content-Type": "application/json",
     }
   };
-  if (payload != null) {
+  if (payload !== null) {
     options.body = JSON.stringify(payload);
   }
+
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      let logMessage = `API error: ${response.statusText} (${response.status})`
+      const logMessage = `API error: ${response.statusText} (${response.status})`
       log.Error(logMessage);
       throw new Error(logMessage);
     }
