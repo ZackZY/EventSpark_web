@@ -16,16 +16,30 @@ Install all dependencies
 npm install
 ```
 
+### Build project
+
+```bash
+npm run build
+```
+
 ### Start project
 
 ```bash
 npm run dev
 ```
 
-### Build project
-
+#### Start project with Docker
+##### Build Docker image
 ```bash
-npm run build
+docker build -t frontend .
+```
+##### Delete previous Docker container (If previously created, you will need to delete the previous container)
+```bash
+docker rm frontend
+```
+##### Run Docker container
+```bash
+docker run -d --name frontend -p 3000:3000 frontend
 ```
 
 ### Run unit test
