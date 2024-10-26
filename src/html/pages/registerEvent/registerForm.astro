@@ -1,0 +1,263 @@
+---
+import { apiUrlHelper } from "../../../utils/api.config";
+import { fetchFromApi } from "../../../utils/api.config";
+import Head from "@components/_head.astro";
+import Footer from "@components/dashboard/_footer.astro";
+import Topbar from "@components/dashboard/_topbar.astro";
+import Sidenav from "@components/dashboard/_sidenav.astro";
+import Scripts from "@components/_scripts.astro";
+
+
+const title = "AdminLTE 4 | General Form Elements";
+const path = "../../../dist";
+const mainPage = "registerEvent";
+const page = "registerForm";
+const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+
+
+//const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+const formatTime24 = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <!--begin::Head-->
+  <head>
+    <Head title={title} path={path} />
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper">
+      <Topbar path={path} />
+      <Sidenav path={path} mainPage={mainPage} page={page} />
+      <!--begin::App Main-->
+      <main class="app-main">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0">Registration Event Form YY</h3>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    General Form
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row g-4">                         
+              <!--begin::Col-->
+              <div class="col-md-10">
+
+                 <!--Begin: Fetch data from API --> <!--TO BE CONTINUED-->
+                 <h1>Upcoming Events</h1>
+                  <ul>
+                    {events.map(data => (
+                    <li key={data.id}>
+                    <h2>Event Name:{data.eventName}</h2>
+                    <p>Event Description:{data.eventDescription}</p>
+                    <p>Event Date:{data.eventDate}</p>
+                    <p>Event Location:{data.eventLocation}</p>
+                    <p>Event Start Time:{formatTime24(data.eventTimeStart)}</p>
+                    <p>Event End Time:{formatTime24(data.eventTimeEnd)}</p>
+                    </li>
+                     ))}
+                  </ul>
+                 <!--End: Fetch data from API -->
+                 
+ <!--test: Fetch data from API -->
+                 
+              
+ <!--Test: Fetch data from API -->
+
+                 
+
+                <!--begin::Form Validation-->
+                <div class="card card-info card-outline mb-20">
+                  <!--begin::H                         eader-->
+                  <div class="card-header">
+                    <div class="card-title">Registration Form Validation</div>
+                  </div>
+                  <!--end::Header-->
+                  <!--begin::Form-->
+                  <form class="needs-validation" novalidate>
+                    <!--begin::Body-->
+                    <div class="card-body">
+                      <!--begin::Row-->
+                      <div class="row g-3">
+                        <!--begin::Col-->
+                        <div class="col-md-6">
+                          <label for="validationCustom01" class="form-label"
+                            >Name</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="validationCustom01"
+                            value="Mark"
+                            required
+                          />
+                          <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Col-->
+                        <div class="col-md-6">
+                          <label for="validationCustom02" class="form-label"
+                            >Last name</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="validationCustom02"
+                            value="Otto"
+                            required
+                          />
+                          <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Col-->
+                        <div class="col-md-6">
+                          <label
+                            for="validationCustomUsername"
+                            class="form-label">Email Address</label
+                          >
+                          <div class="input-group has-validation">
+                            <span
+                              class="input-group-text"
+                              id="inputGroupPrepend">@</span
+                            >
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="validationCustomUsername"
+                              aria-describedby="inputGroupPrepend"
+                              required
+                            />
+                            <div class="invalid-feedback">
+                              Please enter valid email address.
+                            </div>
+                          </div>
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Col-->
+                        <div class="col-md-6">
+                          <label for="validationCustom03" class="form-label"
+                            >Contact number</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="validationCustom03"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please provide a valid contact number.
+                          </div>
+                        </div>
+                        <!--end::Col-->
+                       
+                        
+                        <!--begin::Col-->
+                        <div class="col-12">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value=""
+                              id="invalidCheck"
+                              required
+                            />
+                            <label class="form-check-label" for="invalidCheck">
+                              Agree to terms and conditions
+                            </label>
+                            <div class="invalid-feedback">
+                              You must agree before submitting.
+                            </div>
+                          </div>
+                        </div>
+                        <!--end::Col-->
+                      </div>
+                      <!--end::Row-->
+                    </div>
+                    <!--end::Body-->
+                    <!--begin::Footer-->
+                    <div class="card-footer">
+                      <button class="btn btn-info" type="submit"
+                        >Submit form</button
+                      >
+                    </div>
+                    <!--end::Footer-->
+                  </form>
+                  <!--end::Form-->
+                  <!--begin::JavaScript-->
+                  <script is:inline>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (() => {
+                      "use strict";
+
+                      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                      const forms =
+                        document.querySelectorAll(".needs-validation");
+
+                      // Loop over them and prevent submission
+                      Array.from(forms).forEach((form) => {
+                        form.addEventListener(
+                          "submit",
+                          (event) => {
+                            if (!form.checkValidity()) {
+                              event.preventDefault();
+                              event.stopPropagation();
+                            }
+
+                            form.classList.add("was-validated");
+                          },
+                          false
+                        );
+                      });
+                    })();
+                  </script>
+                  <!--end::JavaScript-->
+                </div>
+                <!--end::Form Validation-->
+              </div>
+              <!--end::Col-->
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+      </main>
+      <!--end::App Main-->
+      <Footer />
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <Scripts path={path} />
+    <!--end::Script-->
+  </body><!--end::Body-->
+</html>
