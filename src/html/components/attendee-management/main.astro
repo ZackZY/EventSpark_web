@@ -1,0 +1,97 @@
+---
+// import { getUserProfiles } from "@components/faker/fake-data.astro";
+import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
+import Edit from "@components/attendee-management/edit.astro";
+import Delete from "@components/attendee-management/delete.astro";
+
+const { message = "" } = Astro.props;
+const path = "../../../dist";
+const events = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+const mainPage = "attendee-management";
+const page = "main";
+// const userProfiles = getUserProfiles(10);
+---
+
+<get-func data-message={message}>
+  <div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+      <!--begin::Row-->
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Attendees</h3>
+              <div class="card-tools">
+                <ul class="pagination pagination-sm float-end">
+                  <li class="page-item">
+                    <a class="page-link" href="#">&laquo;</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">&raquo;</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-1">#</th>
+                    <th class="col-3">Name</th>
+                    <th class="col-3">Email</th>
+                    <th class="col-2">Contact</th>
+                    <th class="col-1">Joined</th>
+                    <th class="col-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    events.map((data) => (
+                      <tr class="align-middle">
+                        <td>{data.id}</td>
+                        <td>
+                          <img
+                            src={path + "/assets/img/default-150x150.png"}
+                            alt="Product 1"
+                            class="rounded-circle img-size-32 me-2"
+                          />
+                          {data.attendeeName}
+                        </td>
+                        <td>{data.attendeeEmail}</td>
+                        <td>{data.createdAt}</td>
+                        <td>{data.updatedAt}</td>
+                        <td>
+                          <Edit message={JSON.stringify(data)} />
+                          <Delete message={JSON.stringify(data)} />
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!--end::Row-->
+    </div>
+    <!--end::Container-->
+  </div>
+</get-func>
+
+<script></script>
