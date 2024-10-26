@@ -1,13 +1,13 @@
 ---
 // import { getUserProfiles } from "@components/faker/fake-data.astro";
-import { apiUrlHelper } from "../../../config/api.config";
-import { fetchFromApi } from "../../../config/api.config";
+import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
+import Create from "@components/organizer-management/create.astro";
 import Edit from "@components/organizer-management/edit.astro";
 import Delete from "@components/organizer-management/delete.astro";
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const events = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+const users = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
 const mainPage = "organizer-management";
 const page = "main";
 // const userProfiles = getUserProfiles(10);
@@ -21,11 +21,15 @@ const page = "main";
       <div class="row">
         <!-- /.col -->
         <div class="col-md-12">
+          <div id="alert" class="alert alert-success d-none" role="alert">
+            Organizer created successfully!
+          </div>
           <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header align-items-center">
               <h3 class="card-title">Organizers</h3>
               <div class="card-tools">
-                <ul class="pagination pagination-sm float-end">
+                <Create message="" />
+                <!-- <ul class="pagination pagination-sm float-end">
                   <li class="page-item">
                     <a class="page-link" href="#">&laquo;</a>
                   </li>
@@ -41,7 +45,7 @@ const page = "main";
                   <li class="page-item">
                     <a class="page-link" href="#">&raquo;</a>
                   </li>
-                </ul>
+                </ul> -->
               </div>
             </div>
             <!-- /.card-header -->
@@ -51,15 +55,15 @@ const page = "main";
                   <tr>
                     <th class="col-1">#</th>
                     <th class="col-3">Name</th>
-                    <th class="col-3">Email</th>
+                    <th class="col-2">Email</th>
                     <th class="col-2">Contact</th>
-                    <th class="col-1">Joined</th>
+                    <th class="col-2">Created At</th>
                     <th class="col-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    events.map((data) => (
+                    users.map((data) => (
                       <tr class="align-middle">
                         <td>{data.id}</td>
                         <td>
@@ -68,11 +72,11 @@ const page = "main";
                             alt="Product 1"
                             class="rounded-circle img-size-32 me-2"
                           />
-                          {data.attendeeName}
+                          {data.name}
                         </td>
-                        <td>{data.attendeeEmail}</td>
+                        <td>{data.email}</td>
+                        <td>{data.contactNumber}</td>
                         <td>{data.createdAt}</td>
-                        <td>{data.updatedAt}</td>
                         <td>
                           <Edit message={JSON.stringify(data)} />
                           <Delete message={JSON.stringify(data)} />
