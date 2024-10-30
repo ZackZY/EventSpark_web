@@ -4,7 +4,7 @@ import Footer from "@components/dashboard/_footer.astro";
 import Topbar from "@components/dashboard/_topbar.astro";
 import Sidenav from "@components/dashboard/_sidenav.astro";
 import Scripts from "@components/_scripts.astro";
-import MainFunction from "@components/event/main.astro";
+import Organizer from "@components/event/event-organizer.astro";
 
 const title = "Manage Events";
 const path = "../../../dist";
@@ -26,7 +26,7 @@ const page = "event";
           <div class="container-fluid">
             <div class="row">
               <div class="col-sm-6">
-                <h3 class="mb-0">Manage Events</h3>
+                <h3 class="mb-0">Organizer Dashboard</h3>
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -39,7 +39,7 @@ const page = "event";
             </div>
           </div>
         </div>
-        <MainFunction />
+        <Organizer />
       </main>
       <Footer />
     </div>

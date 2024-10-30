@@ -1,14 +1,33 @@
 ---
 const { message = "" } = Astro.props;
+// npm install @eonasdan/tempus-dominus
+// npm install @fortawesome/fontawesome-free
 ---
+
+<head>
+  <!-- Include Tempus Dominus for Date & Time Picker -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.2.7/css/tempus-dominus.min.css"
+  />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.2.7/js/tempus-dominus.min.js" defer></script>
+
+  <!-- Include FontAwesome for Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+</head>
 
 <create-func data-message={message}>
   <button
     type="button"
     class="btn btn-success me-4"
     data-bs-toggle="modal"
-    data-bs-target="#createModal">Add Event</button
+    data-bs-target="#createModal"
   >
+    Add Event
+  </button>
 
   <div
     class="modal fade"
@@ -25,146 +44,235 @@ const { message = "" } = Astro.props;
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="Close"></button>
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <form class="needs-validation" novalidate id="createform">
             <div class="card-body">
               <div class="row g-3">
+                
+                <!-- Event Name Input Group -->
                 <div class="col-md-6">
+                  <label for="eventName" class="form-label"><b>Event Name</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="eventName"
+                    placeholder="Enter event name"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid event name.</div>
+                </div>
+
+                <!-- Event Description Input Group -->
+                <div class="col-md-12">
+                  <label for="eventDescription" class="form-label"><b>Event Description</b></label>
+                  <textarea
+                    class="form-control"
+                    id="eventDescription"
+                    rows="3"
+                    placeholder="Enter event description"
+                    required
+                  ></textarea>
+                  <div class="invalid-feedback">Please input a valid description.</div>
+                </div>
+
+                <!-- Start Date Input Group -->
+                <div class="col-md-6">
+                  <label for="startDatePicker" class="form-label"><b>Start Date</b></label>
                   <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Name</b></span
-                    >
                     <input
                       type="text"
-                      class="form-control msg-name"
-                      id="validationName"
-                      placeholder={message.name}
-                      aria-describedby="inputGroupPrepend"
+                      class="form-control"
+                      id="startDatePicker"
+                      placeholder="dd/mm/yyyy HH:MM"
                       required
                     />
-                    <div class="invalid-feedback">
-                      Please input a valid Name.
-                    </div>
+                    <div class="invalid-feedback">Please select a valid start date and time.</div>
                   </div>
                 </div>
+
+                <!-- End Date Input Group -->
                 <div class="col-md-6">
+                  <label for="endDatePicker" class="form-label"><b>End Date</b></label>
                   <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Email</b></span
-                    >
                     <input
                       type="text"
-                      class="form-control msg-email"
-                      id="validationEmail"
-                      placeholder={message.email}
-                      aria-describedby="inputGroupPrepend"
+                      class="form-control"
+                      id="endDatePicker"
+                      placeholder="dd/mm/yyyy HH:MM"
                       required
                     />
-                    <div class="invalid-feedback">
-                      Please input a valid Email.
-                    </div>
+                    <div class="invalid-feedback">Please select a valid end date and time.</div>
                   </div>
                 </div>
+
+                <!-- Location Input Group -->
                 <div class="col-md-6">
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Contact</b></span
-                    >
-                    <input
-                      type="text"
-                      class="form-control msg-contact"
-                      id="validationContact"
-                      placeholder={message.contactNumber}
-                      aria-describedby="inputGroupPrepend"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Please input a valid contact number.
+                  <label for="location" class="form-label"><b>Location</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="location"
+                    placeholder="Enter event location"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid location.</div>
+                </div>
+
+                <!-- Event Type Radio Buttons -->
+                <div class="col-md-6">
+                  <label class="form-label"><b>Type</b></label>
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="eventType"
+                        id="typePublic"
+                        value="public"
+                        checked
+                        required
+                      />
+                      <label class="form-check-label" for="typePublic">Public</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="eventType"
+                        id="typePrivate"
+                        value="private"
+                        required
+                      />
+                      <label class="form-check-label" for="typePrivate">Private</label>
                     </div>
                   </div>
+                  <div class="invalid-feedback">Please select the event type.</div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal">Close</button
-              >
-              <button
-                type="submit"
-                class="btn btn-primary"
-                data-bs-dismiss="modal">Save</button
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
             </div>
           </form>
-          <!--end::Form-->
-          <!--begin::JavaScript-->
-          <script is:inline>
-            (() => {
-              "use strict";
+            <!-- JavaScript to handle form submission -->
+            <script is:inline>
+              (() => {
+                "use strict";
+            
+                const form = document.getElementById("createform");
+                const alertBox = document.getElementById("alert");
+            
+                form.addEventListener("submit", async (event) => {
+                  event.preventDefault();
+            
+                  // Retrieve values from form inputs
+                  // Retrieve values from form inputs
+                  const startDate = document.getElementById("startDatePicker").value;
+                  const endDate = document.getElementById("endDatePicker").value;
 
-              const form = document.getElementById("createform");
-              const alertBox = document.getElementById("alert");
-
-              form.addEventListener("submit", async (event) => {
-                event.preventDefault(); // Prevent the default form submission
-
-                const formData = {
-                  name: document.getElementById("validationName").value,
-                  email: document.getElementById("validationEmail").value,
-                  contactNumber:
-                    document.getElementById("validationContact").value,
-                  // createdAt: document.getElementById("startDate").value,
-                };
-
-                if (!form.checkValidity()) {
-                  event.stopPropagation();
-                } else {
-                  try {
-                    console.log(formData);
-                    const data = await fetchFromApi(
-                      apiUrlHelper.UsersAPI,
-                      "POST",
-                      formData
-                    );
-                    console.log(data); // Log the response data
-
-                    // Show the alert
-                    alertBox.classList.remove("d-none");
-
-                    // Optionally hide the alert after a few seconds
-                    setTimeout(() => {
-                      alertBox.classList.add("d-none");
-                      window.location.reload();
-                    }, 3000);
-                  } catch (error) {
-                    console.error("Error submitting form:", error);
+                  // Helper function to get only the date part in 'dd/mm/yyyy' format
+                  function getDateOnly(datetimeString) {
+                    const date = new Date(datetimeString);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                    const year = date.getFullYear();
+                    return `${year}-${month}-${day}`;
                   }
-                }
 
-                form.classList.add("was-validated");
-              });
-            })();
-          </script>
-          <!--end::JavaScript-->
+                  // Helper function to get only the time part
+                  function getTimeOnly(datetimeString) {
+                    const date = new Date(datetimeString);
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                  }
+
+                  if (new Date(endDate) <= new Date(startDate)) {
+                    alert("End Date must be later than Start Date.");
+                    return; // Stop form submission
+                  }
+
+                  const formData = {
+                    organiserId: "78f27d0f-5dcc-4c33-9908-739b6d0de607",
+                    eventName: document.getElementById("eventName").value,
+                    eventDescription: document.getElementById("eventDescription").value,
+                    eventDate: getDateOnly(startDate),
+                    eventTimeStart: getTimeOnly(startDate),
+                    eventTimeEnd: getTimeOnly(endDate),
+                    location: document.getElementById("location").value,
+                    // Retrieve value of selected radio button
+                    eventType: document.querySelector('input[name="eventType"]:checked')?.value || ""
+                  };
+
+                  // Validate the form
+                  if (!form.checkValidity()) {
+                    event.stopPropagation();
+                  } else {
+                    try {
+                      console.log(formData);
+                      const data = await fetchFromApi(apiUrlHelper.EventsAPI, "POST", formData);
+                      console.log(data);
+            
+                      alertBox.classList.remove("d-none");
+                      setTimeout(() => {
+                        alertBox.classList.add("d-none");
+                        window.location.reload();
+                      }, 3000);
+                    } catch (error) {
+                      console.error("Error submitting form:", error);
+                    }
+                  }
+                  form.classList.add("was-validated");
+                });
+              })();
+            </script>
+            
         </div>
       </div>
     </div>
   </div>
-  <!--end::Edit Modal-->
 </create-func>
 
-<script>
-  class Createfunction extends HTMLElement {
-    connectedCallback() {
-      // Read the message from the data attribute.
-      const message = this.dataset.message;
-      const button = this.querySelector("button");
-    }
-  }
+<!-- Datepicker and Timepicker Initialization -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const options = {
+      display: {
+        components: {
+          calendar: true, // Enable calendar
+          hours: true,
+          minutes: true,
+          seconds: false,
+        },
+        icons: {
+          time: 'fa fa-clock', // FontAwesome clock icon
+        },
+      },
+      stepping: 5, // Optional: 5-minute increments
+    };
 
-  customElements.define("create-func", Createfunction);
+    // Start Date Picker Initialization
+    const startDatePickerElement = document.getElementById("startDatePicker");
+    if (startDatePickerElement) {
+      new tempusDominus.TempusDominus(startDatePickerElement, {
+        ...options,
+        localization: {
+          format: 'DD/MM/YYYY HH:mm', // Date and time format as dd/mm/yyyy
+        },
+      });
+    }
+
+    // End Date Picker Initialization
+    const endDatePickerElement = document.getElementById("endDatePicker");
+    if (endDatePickerElement) {
+      new tempusDominus.TempusDominus(endDatePickerElement, {
+        ...options,
+        localization: {
+          format: 'DD/MM/YYYY HH:mm', // Date and time format as dd/mm/yyyy
+        },
+      });
+    }
+  });
 </script>

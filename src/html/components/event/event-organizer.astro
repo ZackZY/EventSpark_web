@@ -1,5 +1,4 @@
 ---
-// import { getUserProfiles } from "@components/faker/fake-data.astro";
 import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
 import Create from "@components/event/create.astro";
 import Edit from "@components/event/edit.astro";
@@ -11,8 +10,7 @@ const { message = "" } = Astro.props;
 const path = "../../../dist";
 const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
 const mainPage = "event";
-const page = "main";
-// const userProfiles = getUserProfiles(10);
+const page = "event-organizer";
 ---
 
 <get-func data-message={message}>
@@ -22,7 +20,10 @@ const page = "main";
         <div class="col-md-12">
           <div class="card mb-4">
             <div class="card-header align-items-center">
-              <h3 class="card-title" id="pageTitle">Events</h3>
+              <h3 class="card-title" id="pageTitle">Manage Events</h3>
+              <div class="card-tools">
+                <Create message="" />
+              </div>
             </div>
             <div class="card-body p-0">
               <table class="table table-striped" id="dataTable">
@@ -43,7 +44,7 @@ const page = "main";
                 </thead>
                 <tbody>
                   {
-                    events.map((data, index) => (
+                    events.filter((data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607").map((data, index) => (
                       <tr class="align-middle">
                         <td>{index + 1}</td>
                         <td>
