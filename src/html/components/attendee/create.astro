@@ -59,8 +59,8 @@ const { message = "" } = Astro.props;
                 event.preventDefault(); // Prevent the default form submission
 
                 const formData = {
-                  id: "11a4e240-c71c-4304-9d0d-3e5fdd74613d",
-                  Users.email: document.getElementById("attendeeEmail1").value,
+                  id: "9092a826-e298-432b-b7e1-b9026d070d7e",
+                  Users: {email: document.getElementById("attendeeEmail").value},
                 };
 
                 if (!form.checkValidity()) {

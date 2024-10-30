@@ -1,10 +1,12 @@
 ---
 import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
 import Create from "@components/attendee/create.astro";
+//npm install moment
+import moment from 'moment';
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + "11a4e240-c71c-4304-9d0d-3e5fdd74613d", "GET");
+const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + "9092a826-e298-432b-b7e1-b9026d070d7e", "GET");
 const mainPage = "attendee";
 const page = "main";
 
@@ -37,15 +39,15 @@ const page = "main";
                 </thead>
                 <tbody>
                   {
-                    events.Users.filter((data) => data.EventAttendees.typeOfAttendee === 'Attendee').map((data, index) => (
+                    events.Users.filter((data) => data.EventAttendees.typeOfAttendee === 'attendee').map((data, index) => (
                       <tr class="align-middle">
                         <td>{index + 1}</td>
                         <td>{data.name}</td>
                         <td>{data.email}</td>
                         <td>{data.contactNumber}</td>
                         <td>{data.EventAttendees.status}</td>
-                        <td>{data.createdAt}</td>
-                        <td>{data.updatedAt}</td>
+                        <td>{moment.utc(data.createdAt).format('MM/DD/YYYY hh:mm A')}</td>
+                        <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
                       </tr>
                     ))
                   }
