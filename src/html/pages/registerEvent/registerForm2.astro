@@ -1,0 +1,262 @@
+---
+import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
+import Head from "@components/_head.astro";
+import Footer from "@components/dashboard/_footer.astro";
+import Topbar from "@components/dashboard/_topbar.astro";
+import Sidenav from "@components/dashboard/_sidenav.astro";
+import Scripts from "@components/_scripts.astro";
+import { string } from "astro:schema";
+
+const title = "AdminLTE 4 | General Form Elements";
+const path = "../../../dist";
+const mainPage = "registerEvent";
+const page = "registerForm";
+
+// Get hash from URL or props
+const hash = "123456789012345678901234567890ABCDEF123456789012345678901234567890abcdef";
+
+// Split into first set
+let firstSet = hash.substring(0, 36);
+let secondSet = hash.substring(36, 72);
+
+console.log("1st:", firstSet);
+console.log("2nd:", secondSet);
+
+// Fetch events and attendee data
+let eventDetails;
+let attendeeData;
+let error = null;
+
+
+try {
+    // const [events, attendee] = await Promise.all([
+    //     fetchFromApi(apiUrlHelper.EventsAPI, "GET"),
+    //     fetchFromApi(`${apiUrlHelper.UsersAPI}/${hash}`, "GET")  // Fetch attendee data using hash
+    // ]);
+    eventDetails = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + firstSet,  "GET");
+    // console.log("events1: "+ JSON.stringify(events));
+    //  eventDetails = JSON.stringify(events);
+    // console.log(eventDetails);
+    attendeeData = await fetchFromApi(apiUrlHelper.UsersAPI + "/" + secondSet, "GET");
+  
+    // console.log(eventDetails);
+    // console.log("attendees: "+ JSON.stringify(attendee));
+    //attendeeData = attendee;  // This should contain the attendee's details
+} catch (err) {
+    err = "Error fetching data";
+    console.error(err);
+}
+
+const formatTime24 = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+};
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <Head title={title} path={path} />
+    </head>
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div class="app-wrapper">
+            <Topbar path={path} />
+            <Sidenav path={path} mainPage={mainPage} page={page} />
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h3 class="mb-0">Registration Event Form</h3>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-end">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item active">Event Registration</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <div class="row g-4">
+                            <div class="col-md-10">
+                                {/* Display Event Hash */}
+                                <div class="alert alert-info mb-4">
+                                    Event Registration Hash: {hash}
+                                </div>
+
+                                {/* Display Error Messages */}
+                                {error && (
+                                    <div class="alert alert-danger" role="alert">
+                                        {error}
+                                    </div>
+                                )}
+
+                                {/* Display Event Details */}
+                                {
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="card-title">Event Details 1</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <h2>Attendee Id: {eventDetails.id}</h2>
+                                            <h3>Event Name: {eventDetails.eventName}</h3>
+                                            <p>Event Description: {eventDetails.eventDescription}</p>
+                                            <p>Event Date: {eventDetails.eventDate}</p>
+                                            <p>Event Location: {eventDetails.eventLocation}</p>
+                                            <p>Event Start Time: {formatTime24(eventDetails.eventTimeStart)}</p>
+                                            <p>Event End Time: {formatTime24(eventDetails.eventTimeEnd)}</p>
+                                        </div>
+                                    </div>
+                                }
+
+                                {/* Registration Form */}
+                                <div class="card card-info card-outline mb-20">
+                                    <div class="card-header">
+                                        <div class="card-title">Registration Form</div>
+                                    </div>
+                                    <form class="needs-validation" novalidate id="submitform">
+                                        <div class="card-body">
+                                            {attendeeData && (
+                                                <div class="card mb-4">
+                                                    <div class="card-header">
+                                                        <h5 class="card-title">Event Details 2</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h3>attendee52 Name: {attendeeData.name}</h3>
+                                                    </div>
+                                                </div>
+                                            )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                            <div class="row g-3">
+                                                {/* Hidden Attendee ID field */}
+                                                <input 
+                                                    type="hidden" 
+                                                    id="attendeeId" 
+                                                    value={attendeeData?.Id || ''}
+                                                />
+                                               
+                                                
+                                                <div class="col-md-6">
+                                                    <label for="validationName" class="form-label">Name</label>
+                                                    <input 
+                                                        type="text" 
+                                                        class="form-control" 
+                                                        id="validationName" 
+                                                        required 
+                                                        value={attendeeData?.name || ''}
+                                                       
+                                                    />
+                                                    <div class="valid-feedback">Looks good!</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="validationEmail" class="form-label">Email Address</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">@</span>
+                                                        <input 
+                                                            type="email" 
+                                                            class="form-control" 
+                                                            id="validationEmail" 
+                                                            required 
+                                                            value={attendeeData?.email || ''}
+                                                            
+                                                        />
+                                                        <div class="invalid-feedback">Please enter valid email address.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="validationContact" class="form-label">Contact number</label>
+                                                    <input 
+                                                        type="tel" 
+                                                        class="form-control" 
+                                                        id="validationContact" 
+                                                        required 
+                                                        value={attendeeData?.contactNumber || ''}
+                                                        
+                                                    />
+                                                    <div class="invalid-feedback">Please provide a valid contact number.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button class="btn btn-info" type="submit">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <Footer />
+        </div>
+        <Scripts path={path} />
+
+        <script is:inline define:vars={{ hash: hash, attendeeData: attendeeData }}>
+            (() => {
+                "use strict";
+
+                const form = document.getElementById("submitform");
+
+                form.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+
+                    if (!form.checkValidity()) {
+                        event.stopPropagation();
+                        form.classList.add("was-validated");
+                        return;
+                    }
+
+                    const formData = {
+                        attendeeId: document.getElementById("id").value,
+                        name: document.getElementById("validationName").value,
+                        email: document.getElementById("validationEmail").value,
+                        contactNumber: document.getElementById("validationContact").value,
+                        eventAttendeeHash: hash
+                    };
+
+                    try {
+                        const response = await fetch('/api/register', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (response.ok) {
+                            alert('Registration successful!');
+                            window.location.reload();
+                        } else {
+                            throw new Error('Registration failed');
+                        }
+                    } catch (error) {
+                        console.error("Error submitting form:", error);
+                        alert('Registration failed. Please try again.');
+                    }
+                });
+            })();
+        </script>
+    </body>
+</html>

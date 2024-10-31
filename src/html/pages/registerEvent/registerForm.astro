@@ -13,8 +13,10 @@ const path = "../../../dist";
 const mainPage = "registerEvent";
 const page = "registerForm";
 const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+const res = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+const load = await fetchFromApi(apiUrlHelper.EventAttendeesAPI, "GET");
 
-
+// Invited Attendee to join event
 //const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 const formatTime24 = (dateString) => {
   const date = new Date(dateString);
@@ -24,6 +26,10 @@ const formatTime24 = (dateString) => {
     hour12: false
   });
 }
+// Invited Attendee to join event
+// Get the hash from URL params
+const hash  = "1729e1aa8-68b4-4b82-899b-5d576690ab5a";
+
 ---
 
 <!DOCTYPE html>
@@ -75,6 +81,10 @@ const formatTime24 = (dateString) => {
 
                  <!--Begin: Fetch data from API --> <!--TO BE CONTINUED-->
                  <h1>Upcoming Events</h1>
+                 <h3>EventAttendeeHash: 1729e1aa8-68b4-4b82-899b-5d576690ab5a</h3>
+<!-- Use EventAttendeeHash to  -->
+
+
                   <ul>
                     {events.map(data => (
                     <li key={data.id}>
@@ -90,7 +100,13 @@ const formatTime24 = (dateString) => {
                  <!--End: Fetch data from API -->
                  
  <!--test: Fetch data from API -->
-                 
+ <!-- <ul>
+  {load.map(data => (
+  <li key={data.eventAttendeeHash}>
+  <h2>Event Name:{data.eventId}</h2>
+  </li>
+   ))}
+</ul> -->
               
  <!--Test: Fetch data from API -->
 
@@ -98,42 +114,26 @@ const formatTime24 = (dateString) => {
 
                 <!--begin::Form Validation-->
                 <div class="card card-info card-outline mb-20">
-                  <!--begin::H                         eader-->
+                  <!--begin::Header-->
                   <div class="card-header">
                     <div class="card-title">Registration Form Validation</div>
                   </div>
                   <!--end::Header-->
                   <!--begin::Form-->
-                  <form class="needs-validation" novalidate>
+                  <form class="needs-validation" novalidate id="submitform">
                     <!--begin::Body-->
                     <div class="card-body">
                       <!--begin::Row-->
                       <div class="row g-3">
                         <!--begin::Col-->
                         <div class="col-md-6">
-                          <label for="validationCustom01" class="form-label"
+                          <label for="validationName" class="form-label"
                             >Name</label
                           >
                           <input
                             type="text"
                             class="form-control"
-                            id="validationCustom01"
-                            value="Mark"
-                            required
-                          />
-                          <div class="valid-feedback">Looks good!</div>
-                        </div>
-                        <!--end::Col-->
-                        <!--begin::Col-->
-                        <div class="col-md-6">
-                          <label for="validationCustom02" class="form-label"
-                            >Last name</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="validationCustom02"
-                            value="Otto"
+                            id="validationName"
                             required
                           />
                           <div class="valid-feedback">Looks good!</div>
@@ -142,7 +142,7 @@ const formatTime24 = (dateString) => {
                         <!--begin::Col-->
                         <div class="col-md-6">
                           <label
-                            for="validationCustomUsername"
+                            for="validationEmail"
                             class="form-label">Email Address</label
                           >
                           <div class="input-group has-validation">
@@ -153,7 +153,7 @@ const formatTime24 = (dateString) => {
                             <input
                               type="text"
                               class="form-control"
-                              id="validationCustomUsername"
+                              id="validationEmail"
                               aria-describedby="inputGroupPrepend"
                               required
                             />
@@ -165,38 +165,17 @@ const formatTime24 = (dateString) => {
                         <!--end::Col-->
                         <!--begin::Col-->
                         <div class="col-md-6">
-                          <label for="validationCustom03" class="form-label"
+                          <label for="validationContact" class="form-label"
                             >Contact number</label
                           >
                           <input
                             type="text"
                             class="form-control"
-                            id="validationCustom03"
+                            id="validationContact"
                             required
                           />
                           <div class="invalid-feedback">
                             Please provide a valid contact number.
-                          </div>
-                        </div>
-                        <!--end::Col-->
-                       
-                        
-                        <!--begin::Col-->
-                        <div class="col-12">
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              value=""
-                              id="invalidCheck"
-                              required
-                            />
-                            <label class="form-check-label" for="invalidCheck">
-                              Agree to terms and conditions
-                            </label>
-                            <div class="invalid-feedback">
-                              You must agree before submitting.
-                            </div>
                           </div>
                         </div>
                         <!--end::Col-->
@@ -206,15 +185,68 @@ const formatTime24 = (dateString) => {
                     <!--end::Body-->
                     <!--begin::Footer-->
                     <div class="card-footer">
-                      <button class="btn btn-info" type="submit"
-                        >Submit form</button
+                      <button class="btn btn-info" 
+                      type="submit"
+                      >Submit</button
                       >
                     </div>
                     <!--end::Footer-->
                   </form>
                   <!--end::Form-->
+<!-- YY -->
+  <!--begin::JavaScript-->
+  <script is:inline>
+    (() => {
+      "use strict";
+
+      const form = document.getElementById("submitform");
+      // const alertBox = document.getElementById("alert");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = {
+          name: document.getElementById("validationName").value,
+          email: document.getElementById("validationEmail").value,
+          contactNumber:
+            document.getElementById("validationContact").value,
+          // createdAt: document.getElementById("startDate").value,
+        };
+
+        if (!form.checkValidity()) {
+          event.stopPropagation();
+        } else {
+          try {
+            console.log(formData);
+            const data = await fetchFromApi(
+              apiUrlHelper.UsersAPI,
+              "POST",
+              formData
+            );
+            console.log(data); // Log the response data
+
+            // Show the alert
+            alertBox.classList.remove("d-none");
+
+            // Optionally hide the alert after a few seconds
+            setTimeout(() => {
+              alertBox.classList.add("d-none");
+              window.location.reload();
+            }, 3000);
+          } catch (error) {
+            console.error("Error submitting form:", error);
+          }
+        }
+        form.classList.add("was-validated");
+      });
+    })();
+  </script>
+  <!--end::JavaScript-->
+                  <!-- YY -->
+                   
+
                   <!--begin::JavaScript-->
-                  <script is:inline>
+                  <!-- <script is:inline>
                     // Example starter JavaScript for disabling form submissions if there are invalid fields
                     (() => {
                       "use strict";
@@ -239,7 +271,7 @@ const formatTime24 = (dateString) => {
                         );
                       });
                     })();
-                  </script>
+                  </script> -->
                   <!--end::JavaScript-->
                 </div>
                 <!--end::Form Validation-->
@@ -260,4 +292,24 @@ const formatTime24 = (dateString) => {
     <Scripts path={path} />
     <!--end::Script-->
   </body><!--end::Body-->
+
+
+  <div class="col-md-6">
+    <div class="input-group has-validation">
+      <span class="input-group-text" id="inputGroupPrepend"
+        ><b>Contact</b></span
+      >
+      <input
+        type="text"
+        class="form-control msg-contact"
+        id="validationContact"
+        
+        aria-describedby="inputGroupPrepend"
+        required
+      />
+      <div class="invalid-feedback">
+        Please input a valid contact number.
+      </div>
+    </div>
+  </div>
 </html>

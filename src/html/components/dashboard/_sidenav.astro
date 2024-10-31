@@ -48,7 +48,7 @@ const htmlPath = convertPathToHtml(path);
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href={htmlPath + "/registerEvent/registerForm.html"} class:list={["nav-link", mainPage === "registerEvent" && "active"]}
+              <a href={htmlPath + "/registerEvent/registerForm2.html"} class:list={["nav-link", mainPage === "registerEvent" && "active"]}
               >
                 <i class="nav-icon bi bi-circle"></i>
                 <p>
@@ -100,6 +100,9 @@ const htmlPath = convertPathToHtml(path);
             </a>
           </li>
         </ul> -->
+          </p>
+        </a>
+      </li>
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon bi bi-circle-fill"></i>
@@ -108,6 +111,20 @@ const htmlPath = convertPathToHtml(path);
             <i class="nav-arrow bi bi-chevron-right"></i>
           </p>
         </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a
+              href={htmlPath + "/organizer-management.html"}
+              class:list={[
+                "nav-link",
+                page === "organizer-management" && "active",
+              ]}
+            >
+              <i class="nav-icon bi bi-people-fill"></i>
+              <p>Manage Organizers</p>
+            </a>
+          </li>
+        </ul>
       </li> 
       <li class="nav-item">
         <a href="#" class="nav-link">
