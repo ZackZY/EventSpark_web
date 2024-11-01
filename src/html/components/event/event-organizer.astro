@@ -4,6 +4,7 @@ import Create from "@components/event/create.astro";
 import Edit from "@components/event/edit.astro";
 import Delete from "@components/event/delete.astro";
 import Attendee from "@components/attendee/main.astro";
+import Invite from "@components/attendee/create.astro";
 //npm install moment
 import moment from 'moment';
 
@@ -40,8 +41,8 @@ const page = "event-organizer";
                     <th class="col-1" style="width: 100px;">Type</th>
                     <th class="col-1" style="width: 150px;">Created At</th>
                     <th class="col-1" style="width: 150px;">Updated At</th>
-                    <th class="col-1">Attendee List</th>
-                    <th class="col-1" style="width: 300px;">Actions</th>
+                    <th class="col-1" style="width: 220px;">Attendee List</th>
+                    <th class="col-1" style="width: 220px;">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -61,13 +62,8 @@ const page = "event-organizer";
                         <td>{moment.utc(data.createdAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>
-                          <a
-                            href="/attendee"
-                            class="btn btn-link mb-2"
-                            onclick={() => sessionStorage.setItem('eventId', data.id)} 
-                          >
-                            Attendees
-                          </a>
+                          <Attendee message={JSON.stringify(data)} />
+                          <Invite message={JSON.stringify(data)} />
                         </td>
                         <td>             
                           <Edit message={JSON.stringify(data)} />

@@ -1,43 +1,38 @@
 ---
-import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
-import Create from "@components/attendee/create.astro";
-//npm install moment
-import moment from 'moment';
-//npx astro add vercel
-//Enable astro for server-side rendering (SSR)
-import { useEffect } from 'react';
-
-
 const { message = "" } = Astro.props;
-const path = "../../../dist";
-let eventId = '';
-
-useEffect(() => {
-  // This will only run on the client side
-  eventId = localStorage.getItem('eventId');
-  console.log("Retrieved eventId:", eventId);
-}, []); // Empty dependency array to run only once on mount
-
-const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "GET");
-const mainPage = "attendee";
-const page = "main";
-console.log("Retrieved eventId:", eventId); 
 ---
 
 <get-func data-message={message}>
-  <div class="app-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card mb-4">
-            <div class="card-header align-items-center">
-              <h3 class="card-title" id="pageTitle">{eventId}</h3>
-              <div class="card-tools">
-                <Create message="" />
-              </div>
-            </div>
+  <button
+    type="button"
+    data-id={JSON.parse(message).id}
+    class="btn btn-outline-info"
+    data-bs-toggle="modal"
+    data-bs-target="#attendeeModal">View</button
+  >
+
+  <div
+    class="modal fade"
+    id="attendeeModal"
+    tabindex="-1"
+    aria-labelledby="attendeeModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="attendeeModalLabel">Attendee Details</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <input type="hidden" id="eventId" value={JSON.parse(message).id} />
             <div class="card-body p-0">
-              <table class="table table-striped" id="dataTable">
+              <table class="table table-striped" id="attendeeTable">
                 <thead>
                   <tr>
                     <th class="col-1">#</th>
@@ -46,38 +41,111 @@ console.log("Retrieved eventId:", eventId);
                     <th class="col-1">Contact</th>
                     <th class="col-1">Status</th>
                     <th class="col-2">Created At</th>
-                    <th class="col-2">Updated At</th>          
+                    <th class="col-2">Updated At</th>
                   </tr>
                 </thead>
                 <tbody>
-
+                  <!-- Dynamic rows will be populated here -->
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      </div>
-      <div
-        id="toastSuccess"
-        class="toast toast-success"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        style="position: absolute; bottom: 20px; right: 20px;"
-      >
-        <div class="toast-header">
-          <div class="spinner-border spinner-border-sm text-light me-2"></div>
-          <strong class="me-auto">Add Attendee</strong>
-          <small id="toastTime">value</small>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="toast"
-            aria-label="Close"></button>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">Close</button
+              >
+            </div>
+          </form>
+          <script is:inline>
+            document.addEventListener("DOMContentLoaded", function () {
+          
+              // Function to fetch and populate attendee data in the modal
+              async function populateAttendees() {
+                function formatDate(dateString) {
+                  const date = new Date(dateString);
+
+                  // Format date components using UTC to avoid timezone conversion
+                  const day = String(date.getUTCDate()).padStart(2, '0');
+                  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+                  const year = date.getUTCFullYear();
+
+                  // Format time components using UTC
+                  let hours = date.getUTCHours();
+                  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                  const ampm = hours >= 12 ? 'PM' : 'AM';
+                  hours = hours % 12 || 12; // Convert to 12-hour format and handle midnight (0)
+
+                  // Combine into the final format
+                  return `${day}/${month}/${year} ${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+                }
+
+                // Get the eventId from the hidden input field
+                const eventId = document.getElementById("eventId").value;
+            
+                try {
+                  const event = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "GET");
+                  const attendees = event.Users.filter((data) => data.EventAttendees.typeOfAttendee === 'attendee');
+
+                  document.getElementById("attendeeModalLabel").textContent = `Attendees for ${event.eventName || "Event"}`;
+
+                  console.log("Fetched attendees data:", attendees);
+            
+                  const tbody = document.querySelector("#attendeeTable tbody");
+                  tbody.innerHTML = ""; // Clear existing rows
+            
+                  if (Array.isArray(attendees)) {
+                    attendees.forEach((attendee, index) => {
+                      const row = document.createElement("tr");
+                      
+          
+                      const createdAt = formatDate(attendee.createdAt);
+                      const updatedAt = formatDate(attendee.updatedAt);
+          
+                      row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${attendee.name}</td>
+                        <td>${attendee.email}</td>
+                        <td>${attendee.contactNumber || "N/A"}</td>
+                        <td>${attendee.status || "N/A"}</td>
+                        <td>${createdAt}</td>
+                        <td>${updatedAt}</td>
+                      `;
+          
+                      tbody.appendChild(row);
+                    });
+                  } else {
+                    console.error("Expected an array but got:", attendees);
+                    tbody.innerHTML = `<tr><td colspan="7">No attendees data available.</td></tr>`;
+                  }
+                } catch (error) {
+                  console.error("Error fetching attendees:", error);
+                  const tbody = document.querySelector("#attendeeTable tbody");
+                  tbody.innerHTML = `<tr><td colspan="7">Failed to load attendees data.</td></tr>`;
+                }
+              }
+          
+              // Trigger populateAttendees when the modal is shown
+              document.getElementById("attendeeModal").addEventListener("show.bs.modal", populateAttendees);
+            });
+          </script>      
         </div>
       </div>
     </div>
   </div>
-
-  <script></script>
 </get-func>
+
+<script>
+  class Getfunction extends HTMLElement {
+    connectedCallback() {
+      // Read the message from the data attribute.
+      const message = this.dataset.message;
+      const button = this.querySelector("button");
+      button.addEventListener("click", () => {
+        console.log("Button clicked with message:", message);
+      });
+    }
+  }
+
+  customElements.define("get-func", Getfunction);
+</script>
