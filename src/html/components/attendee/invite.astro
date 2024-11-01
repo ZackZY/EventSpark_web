@@ -8,7 +8,7 @@ const { message = "" } = Astro.props;
     class="btn btn-outline-dark"
     data-bs-toggle="modal"
     data-bs-target="#inviteModal">Invite
-    </button>
+  </button>
 
   <div
     class="modal fade"
@@ -31,9 +31,7 @@ const { message = "" } = Astro.props;
           <form id="inviteform">
             <div class="card-body">
               <div class="mb-3">
-                <label for="attendeeEmail" class="form-label"
-                  >Email address</label
-                >
+                <label for="attendeeEmail" class="form-label">Email address</label>
                 <input
                   type="email"
                   class="form-control"
@@ -44,93 +42,78 @@ const { message = "" } = Astro.props;
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary"
-              >Invite</button>
+              <button type="submit" class="btn btn-primary">Invite</button>
             </div>
           </form>
           <script is:inline>
-            (() => {
-              "use strict";
-
+            document.addEventListener("DOMContentLoaded", function () {
               const form = document.getElementById("inviteform");
-              const alertBox = document.getElementById("alert");
+              let isSubmitting = false; // Flag to prevent multiple submissions
 
-              form.addEventListener("submit", async (event) => {
-                event.preventDefault(); // Prevent the default form submission
+              // Function to submit the invite form
+              const handleInviteSubmit = async (event, eventId) => {
+                event.preventDefault();
+
+                if (isSubmitting) return; // Exit if already submitting
+                isSubmitting = true; // Set flag to prevent re-submission
 
                 const formData = {
-                  Users: {email: document.getElementById("newAttendeeEmail").value},
+                  id: eventId,
+                  Users: { email: document.getElementById("newAttendeeEmail").value },
                 };
 
                 if (!form.checkValidity()) {
                   event.stopPropagation();
-                } else {
-                  try {
-                    console.log(formData);
-                    const data = await fetchFromApi(
-                      apiUrlHelper.EventsAPI/"newinvite"/"9092a826-e298-432b-b7e1-b9026d070d7e",
-                      "PUT",
-                      formData
-                    );
-                    console.log(data); // Log the response data
+                  isSubmitting = false; // Reset flag if form is invalid
+                  return;
+                }
 
-                    if (data != null) {
-                    const toastElement =
-                      document.getElementById("toastSuccess");
+                try {
+                  console.log("Form data:", formData);
+                  const data = await fetchFromApi(
+                    `${apiUrlHelper.EventsAPI}/newinvite/${eventId}`,
+                    "PUT",
+                    formData
+                  );
+                  console.log("Response data:", data);
+
+                  if (data) {
+                    const toastElement = document.getElementById("toastSuccess");
                     const toastBody = document.getElementById("toastBody");
-                    const toastTime = document.getElementById("toastTime"); // Get the small element
+                    const toastTime = document.getElementById("toastTime");
 
-                    // Get the current timestamp
                     const currentTimestamp = new Date();
-
-                    // Format the date and time
-                    const options = {
+                    const formattedDateTime = currentTimestamp.toLocaleString([], {
                       year: "numeric",
-                      month: "short", // 'short' for abbreviated month names
+                      month: "short",
                       day: "numeric",
                       hour: "2-digit",
                       minute: "2-digit",
-                      hour12: false, // Change to false for 24-hour format
-                    };
-                    const formattedDateTime = currentTimestamp.toLocaleString(
-                      [],
-                      options
-                    );
+                      hour12: false,
+                    });
                     toastTime.textContent = formattedDateTime;
+                    toastBody.textContent = "Invitation sent successfully.";
 
-                    // Change the body content dynamically
-                    toastBody.textContent =
-                      "Edited " + " successfully."; // Set your dynamic message
-
-                    const toast = new bootstrap.Toast(toastElement); // Create a new toast instance
-
-                    // Add an event listener for when the toast is hidden
-                    toastElement.addEventListener(
-                      "hidden.bs.toast",
-                      function () {
-                        window.location.reload(); // Reload the window
-                      }
-                    );
-
-                    toast.show(); // Show the toast
-                  }
-
-                    // Show the alert
-                    alertBox.classList.remove("d-none");
-
-                    // Optionally hide the alert after a few seconds
-                    setTimeout(() => {
-                      alertBox.classList.add("d-none");
+                    const toast = new bootstrap.Toast(toastElement);
+                    toastElement.addEventListener("hidden.bs.toast", function () {
                       window.location.reload();
-                    }, 3000);
-                  } catch (error) {
-                    console.error("Error invite attendee:", error);
+                    });
+                    toast.show();
                   }
+                } catch (error) {
+                  console.error("Error inviting attendee:", error);
+                } finally {
+                  isSubmitting = false; // Reset flag after completion
                 }
-
                 form.classList.add("was-validated");
+              };
+
+              // Attach form submission handler
+              form.addEventListener("submit", (event) => {
+                const eventId = document.getElementById("eventId").value; // Access eventId from hidden input
+                handleInviteSubmit(event, eventId);
               });
-            })();
+            });
           </script>
         </div>
       </div>
@@ -141,11 +124,30 @@ const { message = "" } = Astro.props;
 <script>
   class Invitefunction extends HTMLElement {
     connectedCallback() {
-      // Read the message from the data attribute.
-      const message = this.dataset.message;
+      const message = JSON.parse(this.dataset.message); // Parse the JSON message
+      const eventId = message.id; // Extract eventId
+
+      // Function to set the modal label dynamically
+      const setInviteModalLabel = async () => {
+        try {
+          const event = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "GET");
+          document.getElementById("inviteModalLabel").textContent = `Invite Attendee for ${event.eventName || "Event"}`;
+        } catch (error) {
+          console.error("Error fetching event details for label:", error);
+        }
+      };
+
       const button = this.querySelector("button");
+      button.addEventListener("click", async () => {
+        console.log("Invite button clicked with eventId:", eventId);
+        document.getElementById("eventId").value = eventId; // Set hidden input value for form submission
+        await setInviteModalLabel(); // Update modal label dynamically
+      });
     }
   }
 
   customElements.define("invite-func", Invitefunction);
 </script>
+
+<!-- Hidden input for event ID, accessible in form submit event -->
+<input type="hidden" id="eventId" />
