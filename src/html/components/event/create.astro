@@ -241,38 +241,49 @@ const { message = "" } = Astro.props;
     const options = {
       display: {
         components: {
-          calendar: true, // Enable calendar
+          calendar: true,
           hours: true,
           minutes: true,
           seconds: false,
         },
         icons: {
-          time: 'fa fa-clock', // FontAwesome clock icon
+          time: 'fa fa-clock',
         },
       },
-      stepping: 5, // Optional: 5-minute increments
+      stepping: 5,
     };
 
-    // Start Date Picker Initialization
-    const startDatePickerElement = document.getElementById("startDatePicker");
-    if (startDatePickerElement) {
-      new tempusDominus.TempusDominus(startDatePickerElement, {
-        ...options,
-        localization: {
-          format: 'DD/MM/YYYY HH:mm', // Date and time format as dd/mm/yyyy
-        },
-      });
+    // Custom date formatting function
+    function formatDateTime(datetime) {
+      const date = new Date(datetime);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const year = date.getFullYear();
+
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12; // Convert to 12-hour format
+
+      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
     }
 
-    // End Date Picker Initialization
+    // Initialize Tempus Dominus for the start date picker
+    const startDatePickerElement = document.getElementById("startDatePicker");
+    if (startDatePickerElement) {
+      const startPicker = new tempusDominus.TempusDominus(startDatePickerElement, options);
+
+      // Apply custom date formatting
+      startPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+
+    // Initialize Tempus Dominus for the end date picker
     const endDatePickerElement = document.getElementById("endDatePicker");
     if (endDatePickerElement) {
-      new tempusDominus.TempusDominus(endDatePickerElement, {
-        ...options,
-        localization: {
-          format: 'DD/MM/YYYY HH:mm', // Date and time format as dd/mm/yyyy
-        },
-      });
+      const endPicker = new tempusDominus.TempusDominus(endDatePickerElement, options);
+
+      // Apply custom date formatting
+      endPicker.dates.formatInput = (date) => formatDateTime(date);
     }
   });
 </script>

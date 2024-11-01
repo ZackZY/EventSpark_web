@@ -2,25 +2,25 @@
 const { message = "" } = Astro.props;
 ---
 
-<create-func data-message={message}>
+<invite-func data-message={message}>
   <button
     type="button"
     class="btn btn-outline-dark"
     data-bs-toggle="modal"
-    data-bs-target="#createModal">Invite
+    data-bs-target="#inviteModal">Invite
     </button>
 
   <div
     class="modal fade"
-    id="createModal"
+    id="inviteModal"
     tabindex="-1"
-    aria-labelledby="createModalLabel"
+    aria-labelledby="inviteModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-lg" style="max-width: 500px;">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="createModalLabel">Invite Attendee</h1>
+          <h1 class="modal-title fs-5" id="inviteModalLabel">Invite Attendee</h1>
           <button
             type="button"
             class="btn-close"
@@ -28,16 +28,16 @@ const { message = "" } = Astro.props;
             aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="createform">
+          <form id="inviteform">
             <div class="card-body">
               <div class="mb-3">
-                <label for="attendeeEmail1" class="form-label"
+                <label for="attendeeEmail" class="form-label"
                   >Email address</label
                 >
                 <input
                   type="email"
                   class="form-control"
-                  id="attendeeEmail1"
+                  id="newAttendeeEmail"
                   aria-describedby="emailHelp"
                   required
                 />
@@ -52,15 +52,14 @@ const { message = "" } = Astro.props;
             (() => {
               "use strict";
 
-              const form = document.getElementById("createform");
+              const form = document.getElementById("inviteform");
               const alertBox = document.getElementById("alert");
 
               form.addEventListener("submit", async (event) => {
                 event.preventDefault(); // Prevent the default form submission
 
                 const formData = {
-                  id: "9092a826-e298-432b-b7e1-b9026d070d7e",
-                  Users: {email: document.getElementById("attendeeEmail").value},
+                  Users: {email: document.getElementById("newAttendeeEmail").value},
                 };
 
                 if (!form.checkValidity()) {
@@ -69,8 +68,8 @@ const { message = "" } = Astro.props;
                   try {
                     console.log(formData);
                     const data = await fetchFromApi(
-                      apiUrlHelper.EventsAPI,
-                      "POST",
+                      apiUrlHelper.EventsAPI/"newinvite"/"9092a826-e298-432b-b7e1-b9026d070d7e",
+                      "PUT",
                       formData
                     );
                     console.log(data); // Log the response data
@@ -137,10 +136,10 @@ const { message = "" } = Astro.props;
       </div>
     </div>
   </div>
-</create-func>
+</invite-func>
 
 <script>
-  class Createfunction extends HTMLElement {
+  class Invitefunction extends HTMLElement {
     connectedCallback() {
       // Read the message from the data attribute.
       const message = this.dataset.message;
@@ -148,5 +147,5 @@ const { message = "" } = Astro.props;
     }
   }
 
-  customElements.define("create-func", Createfunction);
+  customElements.define("invite-func", Invitefunction);
 </script>

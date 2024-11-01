@@ -8,8 +8,10 @@ const { message = "" } = Astro.props;
     data-id={JSON.parse(message).id}
     class="btn btn-outline-primary"
     data-bs-toggle="modal"
-    data-bs-target="#editModal">Edit</button
+    data-bs-target="#editModal"
   >
+    Edit
+  </button>
 
   <div
     class="modal fade"
@@ -22,220 +24,262 @@ const { message = "" } = Astro.props;
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="editModalLabel">Edit Event</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form class="needs-validation" novalidate id={JSON.parse(message).id}>
+          <form class="needs-validation" novalidate id="editForm">
             <input type="hidden" id="editId" value={JSON.parse(message).id} />
             <div class="card-body">
               <div class="row g-3">
+                
+                <!-- Event Name Input Group -->
                 <div class="col-md-6">
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Name</b></span
-                    >
-                    <input
-                      type="text"
-                      class="form-control msg-name"
-                      name="editname"
-                      id="validationName"
-                      aria-describedby="inputGroupPrepend"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Please input a valid Name.
-                    </div>
-                  </div>
+                  <label for="editEventName" class="form-label"><b>Event Name</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editEventName"
+                    placeholder="Enter event name"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid event name.</div>
                 </div>
-                <div class="col-md-6">
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Email</b></span>
-                    <input
-                      type="text"
-                      class="form-control msg-email"
-                      name="editemail"
-                      id="validationEmail"
-                      aria-describedby="inputGroupPrepend"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Please input a valid Email.
-                    </div>
-                  </div>
+
+                <!-- Event Description Input Group -->
+                <div class="col-md-12">
+                  <label for="editEventDescription" class="form-label"><b>Event Description</b></label>
+                  <textarea
+                    class="form-control"
+                    id="editEventDescription"
+                    rows="3"
+                    placeholder="Enter event description"
+                    required
+                  ></textarea>
+                  <div class="invalid-feedback">Please input a valid description.</div>
                 </div>
+
+                <!-- Start Date Input Group -->
                 <div class="col-md-6">
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend"
-                      ><b>Contact</b></span
-                    >
-                    <input
-                      type="text"
-                      class="form-control msg-contact"
-                      name="editcontact"
-                      id="validationContact"
-                      aria-describedby="inputGroupPrepend"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Please input a valid contact number.
+                  <label for="editStartDatePicker" class="form-label"><b>Start Date</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editStartDatePicker"
+                    placeholder="dd/mm/yyyy HH:MM"
+                    required
+                  />
+                  <div class="invalid-feedback">Please select a valid start date and time.</div>
+                </div>
+
+                <!-- End Date Input Group -->
+                <div class="col-md-6">
+                  <label for="editEndDatePicker" class="form-label"><b>End Date</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editEndDatePicker"
+                    placeholder="dd/mm/yyyy HH:MM"
+                    required
+                  />
+                  <div class="invalid-feedback">Please select a valid end date and time.</div>
+                </div>
+
+                <!-- Location Input Group -->
+                <div class="col-md-6">
+                  <label for="editLocation" class="form-label"><b>Location</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editLocation"
+                    placeholder="Enter event location"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid location.</div>
+                </div>
+
+                <!-- Event Type Radio Buttons -->
+                <div class="col-md-6">
+                  <label class="form-label"><b>Type</b></label>
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="editEventType"
+                        id="editTypePublic"
+                        value="public"
+                        required
+                      />
+                      <label class="form-check-label" for="editTypePublic">Public</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="editEventType"
+                        id="editTypePrivate"
+                        value="private"
+                        required
+                      />
+                      <label class="form-check-label" for="editTypePrivate">Private</label>
                     </div>
                   </div>
+                  <div class="invalid-feedback">Please select the event type.</div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal">Close</button
-              >
-              <button
-                id="editSubmit"
-                type="submit"
-                class="btn btn-primary"
-                data-bs-dismiss="modal">Save</button
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
             </div>
           </form>
+
+          <!-- JavaScript to handle form loading and submission -->
           <script is:inline>
             (() => {
               "use strict";
 
-              const alertBox = document.getElementById("alert");
+              const editForm = document.getElementById("editForm");
+              const editModalLabel = document.getElementById("editModalLabel");
 
-              // Function to handle form submission
-              const handleFormSubmit = async (event) => {
-                event.preventDefault(); // Prevent the default form submission
-                const form = event.target; // The form that triggered the event
+              // Load event details when modal opens
+              document.getElementById("editModal").addEventListener("show.bs.modal", async () => {
+                const editId = document.getElementById("editId").value;
+                try {
+                  const eventDetail = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editId, "GET");
+                  // Helper function to format the date as "dd/mm/yyyy hh:mm AM/PM"
+                  function formatDateTime(datetimeString) {
+                    const date = new Date(datetimeString);
+                    const day = String(date.getUTCDate()).padStart(2, '0');
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                    const year = date.getUTCFullYear();
 
-                // Flag to prevent multiple submissions
-                if (form.isSubmitting) return;
-                form.isSubmitting = true; // Set flag to indicate submission in progress
+                    const hours = date.getUTCHours();
+                    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    const formattedHour = hours % 12 || 12; // Convert 24-hour time to 12-hour time
 
-                // Retrieve values directly from the form element
-                const editId = form.id; // Assuming form id is the editId
-                const formData = {
-                  id: editId,
-                  name: form.querySelector('input[name="editname"]').value,
-                  email: form.querySelector('input[name="editemail"]').value,
-                  contactNumber: form.querySelector('input[name="editcontact"]')
-                    .value,
-                };
+                    return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
+                  }
 
-                if (!form.checkValidity()) {
-                  form.isSubmitting = false; // Reset flag if form is invalid
-                  event.stopPropagation();
+                  // Update modal label with event name
+                  editModalLabel.textContent = `Edit Event: ${eventDetail.eventName}`;
+
+                  // Populate form fields with fetched data
+                  document.getElementById("editEventName").value = eventDetail.eventName || "";
+                  document.getElementById("editEventDescription").value = eventDetail.eventDescription || "";
+                  document.getElementById("editStartDatePicker").value = formatDateTime(eventDetail.eventTimeStart);
+                  document.getElementById("editEndDatePicker").value = formatDateTime(eventDetail.eventTimeEnd);
+                  document.getElementById("editLocation").value = eventDetail.eventLocation || "";
+                  
+                  // Set event type radio button
+                  const eventType = (eventDetail.eventType || "PUBLIC").toUpperCase();
+                  document.getElementById("editTypePublic").checked = eventType === "PUBLIC";
+                  document.getElementById("editTypePrivate").checked = eventType === "PRIVATE";
+                } catch (error) {
+                  console.error("Error fetching event details:", error);
+                }
+              });
+
+              // Form submission handler
+              editForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const startDate = document.getElementById("editStartDatePicker").value;
+                const endDate = document.getElementById("editEndDatePicker").value;
+
+                function getDateOnly(datetimeString) {
+                  const date = new Date(datetimeString);
+                  const day = String(date.getDate()).padStart(2, '0');
+                  const month = String(date.getMonth() + 1).padStart(2, '0');
+                  const year = date.getFullYear();
+                  return `${year}-${month}-${day}`;
+                }
+
+                function getTimeOnly(datetimeString) {
+                  const date = new Date(datetimeString);
+                  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                }
+
+                if (new Date(endDate) <= new Date(startDate)) {
+                  alert("End Date must be later than Start Date.");
                   return;
                 }
 
+                const editFormData = {
+                  id: document.getElementById("editId").value,
+                  eventName: document.getElementById("editEventName").value,
+                  eventDescription: document.getElementById("editEventDescription").value,
+                  eventDate: getDateOnly(startDate),
+                  eventTimeStart: getTimeOnly(startDate),
+                  eventTimeEnd: getTimeOnly(endDate),
+                  location: document.getElementById("editLocation").value,
+                  eventType: document.querySelector('input[name="editEventType"]:checked').value
+                };
+
                 try {
-                  const data = await fetchFromApi(
-                    apiUrlHelper.UsersAPI + "/" + editId,
-                    "PUT",
-                    formData
-                  );
-                  console.log(data); // Log the response data
-
-                  if (data != null) {
-                    const toastElement =
-                      document.getElementById("toastSuccess");
-                    const toastBody = document.getElementById("toastBody");
-                    const toastTime = document.getElementById("toastTime"); // Get the small element
-
-                    // Get the current timestamp
-                    const currentTimestamp = new Date();
-
-                    // Format the date and time
-                    const options = {
-                      year: "numeric",
-                      month: "short", // 'short' for abbreviated month names
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true, // Change to false for 24-hour format
-                    };
-                    const formattedDateTime = currentTimestamp.toLocaleString(
-                      [],
-                      options
-                    );
-                    toastTime.textContent = formattedDateTime; // Set the formatted date and time
-
-                    // Change the body content dynamically
-                    toastBody.textContent =
-                      "Edited " + editId + " successfully."; // Set your dynamic message
-
-                    const toast = new bootstrap.Toast(toastElement); // Create a new toast instance
-
-                    // Add an event listener for when the toast is hidden
-                    toastElement.addEventListener(
-                      "hidden.bs.toast",
-                      function () {
-                        window.location.reload(); // Reload the window
-                      }
-                    );
-
-                    toast.show(); // Show the toast
-                  }
+                  const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editFormData.id, "PUT", editFormData);
+                  console.log("Event updated:", response);
+                  window.location.reload();
                 } catch (error) {
-                  console.error("Error submitting form:", error);
-                } finally {
-                  form.isSubmitting = false; // Reset flag after completion
-                }
-
-                form.classList.add("was-validated");
-              };
-
-              // Attach event listener to a parent element or the document
-              document.addEventListener("submit", (event) => {
-                if (event.target.matches("form")) {
-                  // Check if the target is a form
-                  handleFormSubmit(event);
+                  console.error("Error updating event:", error);
                 }
               });
             })();
           </script>
-
-          <!--end::JavaScript-->
         </div>
       </div>
     </div>
   </div>
-  <!--end::Edit Modal-->
 </edit-func>
 
-<script>
-  class Editfunction extends HTMLElement {
-    connectedCallback() {
-      // Read the message from the data attribute.
-      const message = JSON.parse(this.dataset.message);
-      const button = this.querySelector("button");
-      button.addEventListener("click", () => {
-        const editModal = document.getElementById("editModal");
-        const modalTitle = editModal.querySelector(".modal-title");
-        const msgName = editModal.querySelector(".msg-name");
-        const msgEmail = editModal.querySelector(".msg-email");
-        const msgContact = editModal.querySelector(".msg-contact");
+<!-- Initialize Date and Time Pickers for Edit Modal -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const options = {
+      display: {
+        components: {
+          calendar: true,
+          hours: true,
+          minutes: true,
+          seconds: false,
+        },
+        icons: {
+          time: 'fa fa-clock',
+        },
+      },
+      stepping: 5,
+    };
 
-        modalTitle.textContent = `Editing Organizer: ${message.name}`;
-        msgName.value = `${message.name}`;
-        msgEmail.value = `${message.email}`;
-        msgContact.value = `${message.contactNumber}`;
+    const startDatePickerElement = document.getElementById("editStartDatePicker");
+    const endDatePickerElement = document.getElementById("editEndDatePicker");
 
-        // const radioActive = editModal.querySelector("#gridRadios1");
-        // const radioInactive = editModal.querySelector("#gridRadios2");
-        // if (message.status === "Active") {
-        //   radioActive.checked = true;
-        // } else {
-        //   radioInactive.checked = true;
-        // }
-      });
+    function formatDateTime(datetime) {
+      const date = new Date(datetime);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12; // Convert to 12-hour format
+
+      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
     }
-  }
 
-  customElements.define("edit-func", Editfunction);
+    // Initialize Tempus Dominus for start date
+    if (startDatePickerElement) {
+      const startPicker = new tempusDominus.TempusDominus(startDatePickerElement, options);
+
+      startPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+
+    // Initialize Tempus Dominus for end date
+    if (endDatePickerElement) {
+      const endPicker = new tempusDominus.TempusDominus(endDatePickerElement, options);
+
+      endPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+  });
 </script>
