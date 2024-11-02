@@ -19,7 +19,7 @@ npm install
 ### Build project
 
 ```bash
-npm run build
+npm run compile
 ```
 
 ### Start project
