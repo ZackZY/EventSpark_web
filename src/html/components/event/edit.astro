@@ -137,96 +137,91 @@ const { message = "" } = Astro.props;
           <!-- JavaScript to handle form loading and submission -->
           <script is:inline>
             (() => {
-              "use strict";
-
-              const editForm = document.getElementById("editForm");
-              const editModalLabel = document.getElementById("editModalLabel");
-
-              // Load event details when modal opens
-              document.getElementById("editModal").addEventListener("show.bs.modal", async () => {
-                const editId = document.getElementById("editId").value;
-                try {
-                  const eventDetail = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editId, "GET");
-                  // Helper function to format the date as "dd/mm/yyyy hh:mm AM/PM"
-                  function formatDateTime(datetimeString) {
-                    const date = new Date(datetimeString);
-                    const day = String(date.getUTCDate()).padStart(2, '0');
-                    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-                    const year = date.getUTCFullYear();
-
-                    const hours = date.getUTCHours();
-                    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    const formattedHour = hours % 12 || 12; // Convert 24-hour time to 12-hour time
-
-                    return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
-                  }
-
-                  // Update modal label with event name
-                  editModalLabel.textContent = `Edit Event: ${eventDetail.eventName}`;
-
-                  // Populate form fields with fetched data
-                  document.getElementById("editEventName").value = eventDetail.eventName || "";
-                  document.getElementById("editEventDescription").value = eventDetail.eventDescription || "";
-                  document.getElementById("editStartDatePicker").value = formatDateTime(eventDetail.eventTimeStart);
-                  document.getElementById("editEndDatePicker").value = formatDateTime(eventDetail.eventTimeEnd);
-                  document.getElementById("editLocation").value = eventDetail.eventLocation || "";
-                  
-                  // Set event type radio button
-                  const eventType = (eventDetail.eventType || "PUBLIC").toUpperCase();
-                  document.getElementById("editTypePublic").checked = eventType === "PUBLIC";
-                  document.getElementById("editTypePrivate").checked = eventType === "PRIVATE";
-                } catch (error) {
-                  console.error("Error fetching event details:", error);
-                }
-              });
-
-              // Form submission handler
-              editForm.addEventListener("submit", async (event) => {
-                event.preventDefault();
-
-                const startDate = document.getElementById("editStartDatePicker").value;
-                const endDate = document.getElementById("editEndDatePicker").value;
-
-                function getDateOnly(datetimeString) {
-                  const date = new Date(datetimeString);
-                  const day = String(date.getDate()).padStart(2, '0');
-                  const month = String(date.getMonth() + 1).padStart(2, '0');
-                  const year = date.getFullYear();
-                  return `${year}-${month}-${day}`;
-                }
-
-                function getTimeOnly(datetimeString) {
-                  const date = new Date(datetimeString);
-                  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                }
-
-                if (new Date(endDate) <= new Date(startDate)) {
-                  alert("End Date must be later than Start Date.");
-                  return;
-                }
-
-                const editFormData = {
-                  id: document.getElementById("editId").value,
-                  eventName: document.getElementById("editEventName").value,
-                  eventDescription: document.getElementById("editEventDescription").value,
-                  eventDate: getDateOnly(startDate),
-                  eventTimeStart: getTimeOnly(startDate),
-                  eventTimeEnd: getTimeOnly(endDate),
-                  location: document.getElementById("editLocation").value,
-                  eventType: document.querySelector('input[name="editEventType"]:checked').value
-                };
-
-                try {
-                  const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editFormData.id, "PUT", editFormData);
-                  console.log("Event updated:", response);
-                  window.location.reload();
-                } catch (error) {
-                  console.error("Error updating event:", error);
-                }
-              });
+                "use strict";
+            
+                const editForm = document.getElementById("editForm");
+            
+                editForm.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+            
+                    const startDate = document.getElementById("editStartDatePicker").value;
+                    const endDate = document.getElementById("editEndDatePicker").value;
+            
+                    function getDateOnly(datetimeString) {
+                        const date = new Date(datetimeString);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${year}-${month}-${day}`;
+                    }
+            
+                    function getTimeOnly(datetimeString) {
+                        const date = new Date(datetimeString);
+                        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+            
+                    if (new Date(endDate) <= new Date(startDate)) {
+                        alert("End Date must be later than Start Date.");
+                        return;
+                    }
+            
+                    const editFormData = {
+                        id: document.getElementById("editId").value,
+                        eventName: document.getElementById("editEventName").value,
+                        eventDescription: document.getElementById("editEventDescription").value,
+                        eventDate: getDateOnly(startDate),
+                        eventTimeStart: getTimeOnly(startDate),
+                        eventTimeEnd: getTimeOnly(endDate),
+                        location: document.getElementById("editLocation").value,
+                        eventType: document.querySelector('input[name="editEventType"]:checked').value
+                    };
+            
+                    try {
+                        const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editFormData.id, "PUT", editFormData);
+            
+                        if (response) {
+                            // Hide the modal immediately after successful response
+                            const editModal = document.getElementById("editModal");
+                            const modalInstance = bootstrap.Modal.getInstance(editModal);
+                            modalInstance.hide();
+            
+                            // Display the toast notification with dynamic content
+                            const toastElement = document.getElementById("toast");
+                            toastElement.className = `toast toast-success`;
+            
+                            const toastTitle = document.getElementById("toastTitle");
+                            const toastBody = document.getElementById("toastBody");
+                            const toastTime = document.getElementById("toastTime");
+            
+                            const currentTimestamp = new Date();
+                            const formattedDateTime = currentTimestamp.toLocaleString([], {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                            });
+            
+                            // Update toast content
+                            toastTitle.textContent = `Event Updated`;
+                            toastTime.textContent = formattedDateTime;
+                            toastBody.textContent = `The event "${editFormData.eventName}" has been successfully updated.`;
+            
+                            // Show the toast notification
+                            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                            toastElement.addEventListener("hidden.bs.toast", function () {
+                                window.location.reload();
+                            });
+                            toast.show();
+                        }
+            
+                    } catch (error) {
+                        console.error("Error updating event:", error);
+                    }
+                });
             })();
-          </script>
+          </script>            
         </div>
       </div>
     </div>
