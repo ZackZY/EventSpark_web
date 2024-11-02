@@ -40,8 +40,8 @@ const { message = "" } = Astro.props;
                     <th class="col-2">Email</th>
                     <th class="col-1">Contact</th>
                     <th class="col-1">Status</th>
-                    <th class="col-2">Created At</th>
-                    <th class="col-2">Updated At</th>
+                    <th class="col-2">Invited At</th>
+                    <th class="col-2">Attended At</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,6 +71,11 @@ const { message = "" } = Astro.props;
 
       // Function to format date
       function formatDate(dateString) {
+        // Check if dateString is null or empty
+        if (!dateString) {
+            return "";
+        }
+
         const date = new Date(dateString);
         const day = String(date.getUTCDate()).padStart(2, '0');
         const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -84,32 +89,33 @@ const { message = "" } = Astro.props;
         return `${day}/${month}/${year} ${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
       }
 
+
       // Function to fetch and populate attendee data in the modal
       const populateAttendees = async () => {
         try {
-          console.log("EventsAPI with eventId::", eventId);     
+          console.log("View Attendee EventsAPI with eventId:", eventId);     
           const event = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "GET");
-          const attendees = event.Users.filter((data) => data.EventAttendees.typeOfAttendee === 'attendee');
-
+        
           document.getElementById("attendeeModalLabel").textContent = `Attendees for ${event.eventName || "Event"}`;
-
           const tbody = document.querySelector("#attendeeTable tbody");
           tbody.innerHTML = "";
 
+          const eventUsers = await fetchFromApi(apiUrlHelper.EventAttendeesAPI + "/" + eventId, "GET");
+          const attendees = eventUsers.filter((data) => data.typeOfAttendee === 'attendee');
           if (Array.isArray(attendees)) {
             attendees.forEach((attendee, index) => {
               const row = document.createElement("tr");
-              const createdAt = formatDate(attendee.createdAt);
-              const updatedAt = formatDate(attendee.updatedAt);
+              const invitedAt = formatDate(attendee.dateTimeInvited);
+              const attendedAt = formatDate(attendee.dateTimeAttended);
 
               row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${attendee.name}</td>
-                <td>${attendee.email}</td>
-                <td>${attendee.contactNumber || "N/A"}</td>
-                <td>${attendee.status || "N/A"}</td>
-                <td>${createdAt}</td>
-                <td>${updatedAt}</td>
+                <td>${attendee.user.name}</td>
+                <td>${attendee.user.email}</td>
+                <td>${attendee.user.contactNumber || ""}</td>
+                <td>${attendee.status}</td>
+                <td>${invitedAt}</td>
+                <td>${attendedAt}</td>
               `;
 
               tbody.appendChild(row);
@@ -128,7 +134,7 @@ const { message = "" } = Astro.props;
       // Set up the event listener for the "View" button
       const button = this.querySelector("button");
       button.addEventListener("click", () => {
-        console.log("Button clicked with eventId:", eventId);     
+        console.log("View Attendee clicked with eventId:", eventId);     
         populateAttendees();
       });
     }

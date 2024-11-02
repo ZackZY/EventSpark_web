@@ -6,7 +6,7 @@
   const apiUrlHelper = {
     EventsAPI: `${apiDomain}/events/events`,
     UsersAPI: `${apiDomain}/users/users`,
-    EventAttendeesAPI: `${apiDomain}/eventAttendees/eventAttendees`
+    EventAttendeesAPI: `${apiDomain}/eventAttendees`
   }
 
   /**
