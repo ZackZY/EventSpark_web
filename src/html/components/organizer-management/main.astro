@@ -63,26 +63,32 @@ const page = "main";
                 </thead>
                 <tbody>
                   {
-                    users.map((data) => (
-                      <tr class="align-middle">
-                        <td>{data.id}</td>
-                        <td>
-                          <img
-                            src={path + "/assets/img/default-150x150.png"}
-                            alt="Product 1"
-                            class="rounded-circle img-size-32 me-2"
-                          />
-                          {data.name}
-                        </td>
-                        <td>{data.email}</td>
-                        <td>{data.contactNumber}</td>
-                        <td>{data.createdAt}</td>
-                        <td>{data.updatedAt}</td>
-                        <td>
-                          <Edit message={JSON.stringify(data)} />
-                        </td>
-                      </tr>
-                    ))
+                    users ? (
+                      users.map((data) => (
+                        <tr class="align-middle">
+                          <td>{data.id}</td>
+                          <td>
+                            <img
+                              src={path + "/assets/img/default-150x150.png"}
+                              alt="Product 1"
+                              class="rounded-circle img-size-32 me-2"
+                            />
+                            {data.name}
+                          </td>
+                          <td>{data.email}</td>
+                          <td>{data.contactNumber}</td>
+                          <td>{data.createdAt}</td>
+                          <td>{data.updatedAt}</td>
+                          <td>
+                            <Edit message={JSON.stringify(data)} />
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <div class="d-flex justify-content-center">
+                        <h3>No records found!</h3>
+                      </div>
+                    )
                   }
                 </tbody>
               </table>
