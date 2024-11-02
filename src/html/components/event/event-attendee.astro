@@ -56,8 +56,6 @@ const page = "event-attendee";
                         <td>{moment.utc(data.createdAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>
-                          <Edit message={JSON.stringify(data)} />
-                          <Delete message={JSON.stringify(data)} />
                         </td>
                       </tr>
                     ))
