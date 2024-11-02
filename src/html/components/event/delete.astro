@@ -27,28 +27,37 @@ const { message = "" } = Astro.props;
     <script is:inline>
         (() => {
             "use strict";
-
-            const alertBox = document.getElementById("alert");
-
+    
             // Function to handle the delete action
-            const handleDelete = async (eventId) => {
+            const handleDelete = async (eventData) => {
                 try {
-                    const response = await fetch(`${apiUrlHelper.EventsAPI}/${eventId}`, {
+                    const response = await fetch(`${apiUrlHelper.EventsAPI}/${eventData.id}`, {
                         method: "DELETE",
                         headers: {
                             "Content-Type": "application/json",
                         },
                     });
-
+    
                     if (response.ok) {
-                        console.log(`Event with ID ${eventId} deleted successfully.`);
-
-                        // Show success alert
-                        const toastElement = document.getElementById("toastSuccess");
+                        console.log(`Event with ID ${eventData.id} deleted successfully.`);
+    
+                        // Hide the modal immediately
+                        const confirmationModal = document.getElementById("confirmationModal");
+                        const modalInstance = bootstrap.Modal.getInstance(confirmationModal);
+                        modalInstance.hide();
+    
+                        // Display the toast on the main page
+                        const toastElement = document.getElementById("toast");
+                        toastElement.className = `toast toast-secondary`;
+    
+                        const toastTitle = document.getElementById("toastTitle");
                         const toastBody = document.getElementById("toastBody");
                         const toastTime = document.getElementById("toastTime");
-
-                        // Get and format the current timestamp
+    
+                        // Retrieve event name directly from data attribute
+                        const eventName = confirmationModal.dataset.eventName;
+    
+                        // Set up toast content with event name
                         const currentTimestamp = new Date();
                         const options = {
                             year: "numeric",
@@ -58,14 +67,17 @@ const { message = "" } = Astro.props;
                             minute: "2-digit",
                             hour12: true,
                         };
+    
+                        // Display event name in the toast
+                        toastTitle.textContent = `${eventName} deleted`;
                         toastTime.textContent = currentTimestamp.toLocaleString([], options);
-                        toastBody.textContent = `Event deleted successfully.`; 
-
-                        const toast = new bootstrap.Toast(toastElement);
+                        toastBody.textContent = `${eventName} has been successfully deleted.`;
+    
+                        // Show the toast notification
+                        const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
                         toastElement.addEventListener("hidden.bs.toast", function () {
                             window.location.reload();
                         });
-
                         toast.show();
                     } else {
                         const errorData = await response.json();
@@ -76,17 +88,18 @@ const { message = "" } = Astro.props;
                     alert("An error occurred while trying to delete the event.");
                 }
             };
-
+    
             // Attach event listener to the confirm delete button
             document.addEventListener("click", (event) => {
                 if (event.target && event.target.id === "confirmDelete") {
-                    const eventId = document.getElementById("confirmationModal").dataset.eventId;
-                    handleDelete(eventId);
+                    const confirmationModal = document.getElementById("confirmationModal");
+                    const eventId = confirmationModal.dataset.eventId;
+                    const eventName = confirmationModal.dataset.eventName; // Retrieve only the event name
+                    handleDelete({ id: eventId, eventName });
                 }
             });
         })();
-    </script>
-
+    </script>    
 </delete-func>
 
 <script>
@@ -96,12 +109,14 @@ const { message = "" } = Astro.props;
             const message = JSON.parse(this.dataset.message);
             const deleteButton = this.querySelector('button');
 
-            // Set up the modal with the event name and eventId for deletion
+            // Set up the modal with the full message and store eventName in a custom attribute
             deleteButton.addEventListener('click', () => {
                 const confirmationModal = document.getElementById('confirmationModal');
                 confirmationModal.dataset.eventId = message.id; // Store the event ID for deletion
+                confirmationModal.dataset.eventName = message.eventName; // Store only the event name
+
                 const msgName = confirmationModal.querySelector('.confirm-name');
-                msgName.textContent = `Are you sure you want to remove ${message.eventName}?`;
+                msgName.textContent = `Are you sure you want to remove ${message.eventName}?`; // Display full message
             });
         }
     }
