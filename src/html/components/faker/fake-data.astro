@@ -1,0 +1,60 @@
+---
+import { faker } from '@faker-js/faker';
+
+interface MyUserProfile {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  joined: string;
+}
+
+/**
+ * Generates an array of user profiles.
+ *
+ * @param limit - The number of user profiles to generate (must be a positive integer).
+ * @returns An array of MyUserProfile objects.
+ */
+export function getUserProfiles(limit: number): MyUserProfile[] {
+  if (!Number.isInteger(limit) || limit <= 0) {
+    throw new Error("Limit must be a positive integer");
+  }
+
+  let userProfiles: MyUserProfile[] = [];
+
+  for (let i = 0; i < limit; i++) {
+    userProfiles.push({
+      id: i + 1,
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      phone: faker.phone.number({ style: "national" }),
+      joined: faker.date.past().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    });
+  }
+
+  return userProfiles;
+}
+
+// Edit a user profile by ID
+// export function editUserProfile(id: number, updatedProfile: Partial<MyUserProfile>): MyUserProfile | undefined {
+//   const index = userProfiles.findIndex(profile => profile.id === id);
+
+//   if (index !== -1) {
+//     userProfiles[index] = { ...userProfiles[index], ...updatedProfile };
+//     return userProfiles[index];
+//   }
+
+//   return undefined; // Profile not found
+// }
+
+// Delete a user profile by ID
+export function deleteUserProfile(id: number): boolean {
+  const initialLength = userProfiles.length;
+  userProfiles = userProfiles.filter(profile => profile.id !== id);
+  return userProfiles.length < initialLength; // Returns true if a profile was deleted
+}
+---
