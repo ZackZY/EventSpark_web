@@ -5,15 +5,15 @@ import Edit from "@components/organizer-management/edit.astro";
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-let users = [];
-try {
-  users = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
-} catch (error) {
-  console.error("Failed to fetch users:", error);
-} finally {
-  // Ensure users is always an array even if the fetch fails
-  users = users || [];
-}
+// let users = [];
+// try {
+//   users = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+// } catch (error) {
+//   console.error("Failed to fetch users:", error);
+// } finally {
+//   // Ensure users is always an array even if the fetch fails
+//   users = users || [];
+// }
 const mainPage = "organizer-management";
 const page = "main";
 // const userProfiles = getUserProfiles(10);
@@ -68,7 +68,7 @@ const page = "main";
                   </tr>
                 </thead>
                 <tbody>
-                  {
+                  <!-- {
                     users && users.length > 0 ? (
                       users.map((data) => (
                           <tr class="align-middle">
@@ -95,7 +95,7 @@ const page = "main";
                         <td colspan="7" class="text-center">No users found</td>
                       </tr>
                     )
-                  }
+                  } -->
                 </tbody>
               </table>
             </div>
