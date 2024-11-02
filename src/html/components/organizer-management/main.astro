@@ -1,13 +1,19 @@
 ---
 // import { getUserProfiles } from "@components/faker/fake-data.astro";
 import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
-import Create from "@components/organizer-management/create.astro";
 import Edit from "@components/organizer-management/edit.astro";
-import Delete from "@components/organizer-management/delete.astro";
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const users = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+let users = [];
+try {
+  users = await fetchFromApi(apiUrlHelper.UsersAPI, "GET");
+} catch (error) {
+  console.error("Failed to fetch users:", error);
+} finally {
+  // Ensure users is always an array even if the fetch fails
+  users = users || [];
+}
 const mainPage = "organizer-management";
 const page = "main";
 // const userProfiles = getUserProfiles(10);
@@ -63,8 +69,8 @@ const page = "main";
                 </thead>
                 <tbody>
                   {
-                    users
-                      ? users.map((data) => (
+                    users && users.length > 0 ? (
+                      users.map((data) => (
                           <tr class="align-middle">
                             <td>{data.id}</td>
                             <td>
@@ -84,7 +90,11 @@ const page = "main";
                             </td>
                           </tr>
                         ))
-                      : ""
+                    ) : (
+                      <tr>
+                        <td colspan="7" class="text-center">No users found</td>
+                      </tr>
+                    )
                   }
                 </tbody>
               </table>

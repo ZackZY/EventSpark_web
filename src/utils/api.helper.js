@@ -1,12 +1,35 @@
 // api.js
 
 (function (global) {
-  const apiDomain = 'http://localhost:3001' // Replace with your API
+  const ENV_CONFIG = {
+    staging: {
+      hostname: 'ecs-frontend-lb-735742951.ap-southeast-1.elb.amazonaws.com',
+      apiDomain: 'https://api.staging.com',
+      loginDomain: 'https://bqqn2os7e1.execute-api.ap-southeast-1.amazonaws.com/stg'
+    },
+    development: {
+      hostname: 'localhost',
+      apiDomain: 'http://localhost:3001',
+      loginDomain: 'http://localhost:4000/dev'
+    }
+  }
+
+  const getCurrentEnv = () => {
+    const { hostname } = window.location
+    return Object.values(ENV_CONFIG).find(env => hostname.includes(env.hostname)) || ENV_CONFIG.development
+  }
+
+  const currentEnv = getCurrentEnv()
+  const { apiDomain } = currentEnv
+  const { loginDomain } = currentEnv
 
   const apiUrlHelper = {
     EventsAPI: `${apiDomain}/events/events`,
     UsersAPI: `${apiDomain}/users/users`,
-    EventAttendeesAPI: `${apiDomain}/eventAttendees/eventAttendees`
+    EventAttendeesAPI: `${apiDomain}/eventAttendees/eventAttendees`,
+    LoginAPI: `${loginDomain}/auth/login`,
+    VerifyTokenAPI: `${loginDomain}/auth/verify`,
+    LogoutAPI: `${loginDomain}/auth/logout`
   }
 
   /**
@@ -19,6 +42,7 @@
   async function fetchFromApi(url, method, payload = null) {
     const options = {
       method,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -28,21 +52,41 @@
       options.body = JSON.stringify(payload)
     }
 
+    // eslint-disable-next-line no-useless-catch
     try {
       const response = await fetch(url, options)
+
+      if (response.status === 401) {
+        throw new Error('Unauthorized access')
+      }
+
       if (!response.ok) {
-        console.error(`API error: ${response.statusText} (${response.status})`)
+        // console.error(`API error: ${response.statusText} (${response.status})`)
         throw new Error(response.statusText)
       }
 
-      return await response.json();
+      return await response.json()
     } catch (error) {
-      console.error('Fetch API error:', error)
+      // console.error('Fetch API error:', error)
       throw error
+    }
+  }
+
+  async function checkAuth() {
+    try {
+      const response = await fetchFromApi(apiUrlHelper.VerifyTokenAPI, 'POST')
+      if (!response?.valid) {
+        return false
+      }
+
+      return true
+    } catch {
+      return false
     }
   }
 
   // Expose the helper and functions globally
   global.apiUrlHelper = apiUrlHelper
   global.fetchFromApi = fetchFromApi
+  global.checkAuth = checkAuth
 })(window)
