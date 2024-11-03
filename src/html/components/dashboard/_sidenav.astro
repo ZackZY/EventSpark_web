@@ -18,7 +18,7 @@ const htmlPath = convertPathToHtml(path);
       />
       <!--end::Brand Image-->
       <!--begin::Brand Text-->
-      <span class="brand-text fw-light">AdminLTE 4</span>
+      <span class="brand-text fw-light">EventSpark</span>
       <!--end::Brand Text-->
     </a>
     <!--end::Brand Link-->
@@ -47,16 +47,24 @@ const htmlPath = convertPathToHtml(path);
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon bi bi-circle-fill"></i>
+            <i class="nav-icon bi bi-calendar-date"></i>
             <p>
               Events
               <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href={htmlPath + "/event-organiser.html"} class="nav-link">
+                <i class="nav-icon bi bi-calendar2-check"></i>
+                <p>Manage Events</p>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon bi bi-circle-fill"></i>
+            <i class="nav-icon bi bi-person-gear"></i>
             <p>
               Administrator
               <i class="nav-arrow bi bi-chevron-right"></i>
@@ -71,7 +79,7 @@ const htmlPath = convertPathToHtml(path);
                   page === "organizer-management" && "active",
                 ]}
               >
-                <i class="nav-icon bi bi-people-fill"></i>
+                <i class="nav-icon bi bi-people"></i>
                 <p>Manage Organizers</p>
               </a>
             </li>
@@ -79,7 +87,7 @@ const htmlPath = convertPathToHtml(path);
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon bi bi-circle-fill"></i>
+            <i class="nav-icon bi bi-pie-chart"></i>
             <p>
               Analytics
               <i class="nav-arrow bi bi-chevron-right"></i>
@@ -87,7 +95,7 @@ const htmlPath = convertPathToHtml(path);
           </a>
         </li>
 
-        <li class="nav-header">Astro Sample</li>
+        <!-- <li class="nav-header">Astro Sample</li>
         <li class:list={["nav-item", mainPage === "dashboard" && "menu-open"]}>
           <a
             href="#"
@@ -635,10 +643,11 @@ const htmlPath = convertPathToHtml(path);
             <p>Informational</p>
           </a>
         </li>
+      </ul> -->
+        <!--end::Sidebar Menu-->
       </ul>
-      <!--end::Sidebar Menu-->
     </nav>
+    <!--end::Sidebar Wrapper-->
   </div>
-  <!--end::Sidebar Wrapper-->
+  <!--end::Sidebar-->
 </aside>
-<!--end::Sidebar-->

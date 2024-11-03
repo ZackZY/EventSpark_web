@@ -1,0 +1,361 @@
+---
+const { message = "" } = Astro.props;
+// npm install @eonasdan/tempus-dominus
+// npm install @fortawesome/fontawesome-free
+---
+
+<head>
+  <!-- Include Tempus Dominus for Date & Time Picker -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.2.7/css/tempus-dominus.min.css"
+  />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.2.7/js/tempus-dominus.min.js" defer></script>
+
+  <!-- Include FontAwesome for Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+</head>
+
+<create-func data-message={message}>
+  <button
+    type="button"
+    class="btn btn-outline-success me-4"
+    data-bs-toggle="modal"
+    data-bs-target="#createModal"
+  >
+    Add Event
+  </button>
+
+  <div
+    class="modal fade"
+    id="createModal"
+    tabindex="-1"
+    aria-labelledby="createModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createModalLabel">Add Event</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate id="createform">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="alert alert-danger m-2" id="alertMessage" role="alert" style="display: none;">
+                    End Date must be later than Start Date.
+                  </div>
+                </div>
+              </div>
+              <div class="row g-3">        
+                <!-- Event Name Input Group -->
+                <div class="col-md-6">
+                  <label for="eventName" class="form-label"><b>Event Name</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="eventName"
+                    placeholder="Enter event name"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid event name.</div>
+                </div>
+
+                <!-- Event Description Input Group -->
+                <div class="col-md-12">
+                  <label for="eventDescription" class="form-label"><b>Event Description</b></label>
+                  <textarea
+                    class="form-control"
+                    id="eventDescription"
+                    rows="3"
+                    placeholder="Enter event description"
+                    required
+                  ></textarea>
+                  <div class="invalid-feedback">Please input a valid description.</div>
+                </div>
+
+                <!-- Start Date Input Group -->
+                <div class="col-md-6">
+                  <label for="startDatePicker" class="form-label"><b>Start Date</b></label>
+                  <div class="input-group has-validation">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="startDatePicker"
+                      placeholder="dd/mm/yyyy HH:MM"
+                      required
+                    />
+                    <div class="invalid-feedback">Please select a valid start date and time.</div>
+                  </div>
+                </div>
+
+                <!-- End Date Input Group -->
+                <div class="col-md-6">
+                  <label for="endDatePicker" class="form-label"><b>End Date</b></label>
+                  <div class="input-group has-validation">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="endDatePicker"
+                      placeholder="dd/mm/yyyy HH:MM"
+                      required
+                    />
+                    <div class="invalid-feedback">Please select a valid end date and time.</div>
+                  </div>
+                </div>
+
+                <!-- Location Input Group -->
+                <div class="col-md-6">
+                  <label for="location" class="form-label"><b>Location</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="location"
+                    placeholder="Enter event location"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid location.</div>
+                </div>
+
+                <!-- Event Type Radio Buttons -->
+                <div class="col-md-6">
+                  <label class="form-label"><b>Type</b></label>
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="eventType"
+                        id="typePublic"
+                        value="public"
+                        checked
+                        required
+                      />
+                      <label class="form-check-label" for="typePublic">Public</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="eventType"
+                        id="typePrivate"
+                        value="private"
+                        required
+                      />
+                      <label class="form-check-label" for="typePrivate">Private</label>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback">Please select the event type.</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+            <!-- JavaScript to handle form submission -->
+            <script is:inline>
+              (() => {
+                  "use strict";
+              
+                  const form = document.getElementById("createform");
+                  const userId = localStorage.getItem('id') || '';
+                  console.log("create userId: ", userId);
+                  document.getElementById("startDatePicker").readOnly = true;
+                  document.getElementById("endDatePicker").readOnly = true;
+              
+                  form.addEventListener("submit", async (event) => {
+                      event.preventDefault();
+              
+                      const startDate = document.getElementById("startDatePicker").value;
+                      const endDate = document.getElementById("endDatePicker").value;
+                      
+      
+                      function setDateOnly(datetimeString) {
+                          // Parsing date in DD/MM/YdatetimeStringYYY format
+                          const [datePart, timePart] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Constructing a Date object from parsed parts
+                          const date = new Date(`${year}-${month}-${day}`);
+                          
+                          // Formatting to YYYY-MM-DD
+                          const formattedDay = String(date.getDate()).padStart(2, '0');
+                          const formattedMonth = String(date.getMonth() + 1).padStart(2, '0');
+                          const formattedYear = date.getFullYear();
+                          
+                          return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+                      }
+            
+                      function setTimeOnly(datetimeString) {
+                          // Parsing date in DD/MM/YYYY format
+                          const [datePart, timePart, period] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Convert to 24-hour format if necessary
+                          let [hours, minutes] = timePart.split(":");
+                          if (period === "PM" && hours !== "12") hours = (parseInt(hours) + 12).toString();
+                          if (period === "AM" && hours === "12") hours = "00";
+
+                          // Format hours and minutes
+                          const formattedHours = hours.padStart(2, '0');
+                          const formattedMinutes = minutes.padStart(2, '0');
+                          
+                          return `${formattedHours}:${formattedMinutes}`;
+                      }
+              
+                      function parseDateTime(datetimeString) {
+                          // Split date and time parts
+                          const [datePart, timePart, period] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/").map(Number);
+                          let [hours, minutes] = timePart.split(":").map(Number);
+
+                          // Convert to 24-hour format
+                          if (period === "PM" && hours !== 12) hours += 12;
+                          if (period === "AM" && hours === 12) hours = 0;
+
+                          // Create a new Date object
+                          return new Date(year, month - 1, day, hours, minutes);
+                      }
+            
+                      if (parseDateTime(endDate) <= parseDateTime(startDate)) {
+                          document.getElementById("alertMessage").style.display= "block";
+                          return;
+                      }
+              
+                      const formData = {
+                          organiserId: userId,
+                          eventName: document.getElementById("eventName").value,
+                          eventDescription: document.getElementById("eventDescription").value,
+                          eventDate: setDateOnly(startDate),
+                          eventTimeStart: setTimeOnly(startDate),
+                          eventTimeEnd: setTimeOnly(endDate),
+                          eventLocation: document.getElementById("location").value,
+                          eventType: document.querySelector('input[name="eventType"]:checked')?.value || "",
+                          attendees:[]
+                      };
+              
+                      if (!form.checkValidity()) {
+                          event.stopPropagation();
+                          return;
+                      }
+              
+                      try {
+                          console.log(formData);
+                          const data = await fetchFromApi(apiUrlHelper.EventsAPI, "POST", formData);
+                          console.log(data);
+              
+                          if (data) {
+                              // Hide the modal immediately
+                              const createModal = document.getElementById("createModal");
+                              const modalInstance = bootstrap.Modal.getInstance(createModal);
+                              modalInstance.hide();
+              
+                              // Display the toast notification
+                              const toastElement = document.getElementById("toast");
+                              toastElement.className = `toast toast-success`;
+              
+                              const toastTitle = document.getElementById("toastTitle");
+                              const toastBody = document.getElementById("toastBody");
+                              const toastTime = document.getElementById("toastTime");
+              
+                              const currentTimestamp = new Date();
+                              const formattedDateTime = currentTimestamp.toLocaleString([], {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                              });
+              
+                              // Update toast content
+                              toastTitle.textContent = "Event Created";
+                              toastTime.textContent = formattedDateTime;
+                              toastBody.textContent = `The event "${formData.eventName}" has been successfully created.`;
+              
+                              // Show the toast
+                              const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                              toastElement.addEventListener("hidden.bs.toast", function () {
+                                  window.location.reload();
+                              });
+                              toast.show();
+                          }
+              
+                      } catch (error) {
+                          console.error("Error submitting form:", error);
+                      }
+              
+                      form.classList.add("was-validated");
+                  });
+              })();
+            </script>             
+        </div>
+      </div>
+    </div>
+  </div>
+</create-func>
+
+<!-- Datepicker and Timepicker Initialization -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const options = {
+      display: {
+        components: {
+          calendar: true,
+          hours: true,
+          minutes: true,
+          seconds: false,
+        },
+        icons: {
+          time: 'fa fa-clock',
+        },
+      },
+      stepping: 5,
+    };
+
+    // Custom date formatting function
+    function formatDateTime(datetime) {
+      const date = new Date(datetime);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const year = date.getFullYear();
+
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12; // Convert to 12-hour format
+
+      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
+    }
+
+    // Initialize Tempus Dominus for the start date picker
+    const startDatePickerElement = document.getElementById("startDatePicker");
+    if (startDatePickerElement) {
+      const startPicker = new tempusDominus.TempusDominus(startDatePickerElement, options);
+
+      // Apply custom date formatting
+      startPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+
+    // Initialize Tempus Dominus for the end date picker
+    const endDatePickerElement = document.getElementById("endDatePicker");
+    if (endDatePickerElement) {
+      const endPicker = new tempusDominus.TempusDominus(endDatePickerElement, options);
+
+      // Apply custom date formatting
+      endPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+  });
+</script>

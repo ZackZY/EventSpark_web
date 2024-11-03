@@ -1,0 +1,358 @@
+---
+const { message = "" } = Astro.props;
+---
+
+<edit-func data-message={message}>
+  <button
+    type="button"
+    data-id={JSON.parse(message).id}
+    class="btn btn-outline-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#editModal"
+  >
+    Edit
+  </button>
+
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editModalLabel">Edit Event</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate id="editForm">
+            <input type="hidden" id="editId" value={JSON.parse(message).id} />
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="alert alert-danger m-2" id="alertMessage" role="alert" style="display: none;">
+                    End Date must be later than Start Date.
+                  </div>
+                </div>
+              </div>
+              <div class="row g-3">          
+                <!-- Event Name Input Group -->
+                <div class="col-md-6">
+                  <label for="editEventName" class="form-label"><b>Event Name</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editEventName"
+                    placeholder="Enter event name"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid event name.</div>
+                </div>
+
+                <!-- Event Description Input Group -->
+                <div class="col-md-12">
+                  <label for="editEventDescription" class="form-label"><b>Event Description</b></label>
+                  <textarea
+                    class="form-control"
+                    id="editEventDescription"
+                    rows="3"
+                    placeholder="Enter event description"
+                    required
+                  ></textarea>
+                  <div class="invalid-feedback">Please input a valid description.</div>
+                </div>
+
+                <!-- Start Date Input Group -->
+                <div class="col-md-6">
+                  <label for="editStartDatePicker" class="form-label"><b>Start Date</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editStartDatePicker"
+                    placeholder="dd/mm/yyyy HH:MM"
+                    required
+                  />
+                  <div class="invalid-feedback">Please select a valid start date and time.</div>
+                </div>
+
+                <!-- End Date Input Group -->
+                <div class="col-md-6">
+                  <label for="editEndDatePicker" class="form-label"><b>End Date</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editEndDatePicker"
+                    placeholder="dd/mm/yyyy HH:MM"
+                    required
+                  />
+                  <div class="invalid-feedback">Please select a valid end date and time.</div>
+                </div>
+
+                <!-- Location Input Group -->
+                <div class="col-md-6">
+                  <label for="editLocation" class="form-label"><b>Location</b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editLocation"
+                    placeholder="Enter event location"
+                    required
+                  />
+                  <div class="invalid-feedback">Please input a valid location.</div>
+                </div>
+
+                <!-- Event Type Radio Buttons -->
+                <div class="col-md-6">
+                  <label class="form-label"><b>Type</b></label>
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="editEventType"
+                        id="editTypePublic"
+                        value="public"
+                        required
+                      />
+                      <label class="form-check-label" for="editTypePublic">Public</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="editEventType"
+                        id="editTypePrivate"
+                        value="private"
+                        required
+                      />
+                      <label class="form-check-label" for="editTypePrivate">Private</label>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback">Please select the event type.</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+
+          <!-- JavaScript to handle form loading and submission -->
+          <script is:inline>
+            (() => {
+                "use strict";
+            
+                const editForm = document.getElementById("editForm");
+                document.getElementById("startDatePicker").readOnly = true;
+                document.getElementById("endDatePicker").readOnly = true;
+
+                const editModalLabel = document.getElementById("editModalLabel");
+                // Load event details when modal opens
+                document.getElementById("editModal").addEventListener("show.bs.modal", async () => {
+                  const editId = document.getElementById("editId").value;
+                  try {
+                    const eventDetail = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editId, "GET");
+                    // Helper function to format the date as "dd/mm/yyyy hh:mm AM/PM"
+                    function formatDateTime(datetimeString) {
+                      const date = new Date(datetimeString);
+                      const day = String(date.getUTCDate()).padStart(2, '0');
+                      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                      const year = date.getUTCFullYear();
+                      const hours = date.getUTCHours();
+                      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                      const ampm = hours >= 12 ? 'PM' : 'AM';
+                      const formattedHour = hours % 12 || 12; // Convert 24-hour time to 12-hour time
+                      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
+                    }
+                    // Update modal label with event name
+                    editModalLabel.textContent = `Edit Event for ${eventDetail.eventName}`;
+                    // Populate form fields with fetched data
+                    document.getElementById("editEventName").value = eventDetail.eventName || "";
+                    document.getElementById("editEventDescription").value = eventDetail.eventDescription || "";
+                    document.getElementById("editStartDatePicker").value = formatDateTime(eventDetail.eventTimeStart);
+                    document.getElementById("editEndDatePicker").value = formatDateTime(eventDetail.eventTimeEnd);
+                    document.getElementById("editLocation").value = eventDetail.eventLocation || "";
+                    
+                    // Set event type radio button
+                    const eventType = (eventDetail.eventType || "PUBLIC").toUpperCase();
+                    document.getElementById("editTypePublic").checked = eventType === "PUBLIC";
+                    document.getElementById("editTypePrivate").checked = eventType === "PRIVATE";
+                  } catch (error) {
+                    console.error("Error fetching event details:", error);
+                  }           
+                });
+            
+                editForm.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+            
+                    const startDate = document.getElementById("editStartDatePicker").value;
+                    const endDate = document.getElementById("editEndDatePicker").value;
+
+                    function setDateOnly(datetimeString) {
+                          // Parsing date in DD/MM/YdatetimeStringYYY format
+                          const [datePart, timePart] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Constructing a Date object from parsed parts
+                          const date = new Date(`${year}-${month}-${day}`);
+                          
+                          // Formatting to YYYY-MM-DD
+                          const formattedDay = String(date.getDate()).padStart(2, '0');
+                          const formattedMonth = String(date.getMonth() + 1).padStart(2, '0');
+                          const formattedYear = date.getFullYear();
+                          
+                          return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+                      }
+            
+                      function setTimeOnly(datetimeString) {
+                          // Parsing date in DD/MM/YYYY format
+                          const [datePart, timePart, period] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Convert to 24-hour format if necessary
+                          let [hours, minutes] = timePart.split(":");
+                          if (period === "PM" && hours !== "12") hours = (parseInt(hours) + 12).toString();
+                          if (period === "AM" && hours === "12") hours = "00";
+
+                          // Format hours and minutes
+                          const formattedHours = hours.padStart(2, '0');
+                          const formattedMinutes = minutes.padStart(2, '0');
+                          
+                          return `${formattedHours}:${formattedMinutes}`;
+                      }
+            
+                    function parseDateTime(datetimeString) {
+                        // Split date and time parts
+                        const [datePart, timePart, period] = datetimeString.split(" ");
+                        const [day, month, year] = datePart.split("/").map(Number);
+                        let [hours, minutes] = timePart.split(":").map(Number);
+
+                        // Convert to 24-hour format
+                        if (period === "PM" && hours !== 12) hours += 12;
+                        if (period === "AM" && hours === 12) hours = 0;
+
+                        // Create a new Date object
+                        return new Date(year, month - 1, day, hours, minutes);
+                    }
+          
+                    if (parseDateTime(endDate) <= parseDateTime(startDate)) {
+                        document.getElementById("alertMessage").style.display= "block";
+                        return;
+                    }
+
+                   const eventId = document.getElementById("editId").value
+                    const editFormData = {
+                        eventName: document.getElementById("editEventName").value,
+                        eventDescription: document.getElementById("editEventDescription").value,
+                        eventDate: setDateOnly(startDate),
+                        eventTimeStart: setTimeOnly(startDate),
+                        eventTimeEnd: setTimeOnly(endDate),
+                        location: document.getElementById("editLocation").value,
+                        eventType: document.querySelector('input[name="editEventType"]:checked').value,
+                    };
+            
+                    try {
+                        const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "PUT", editFormData);
+            
+                        if (response) {
+                            // Hide the modal immediately after successful response
+                            const editModal = document.getElementById("editModal");
+                            const modalInstance = bootstrap.Modal.getInstance(editModal);
+                            modalInstance.hide();
+            
+                            // Display the toast notification with dynamic content
+                            const toastElement = document.getElementById("toast");
+                            toastElement.className = `toast toast-success`;
+            
+                            const toastTitle = document.getElementById("toastTitle");
+                            const toastBody = document.getElementById("toastBody");
+                            const toastTime = document.getElementById("toastTime");
+            
+                            const currentTimestamp = new Date();
+                            const formattedDateTime = currentTimestamp.toLocaleString([], {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                            });
+            
+                            // Update toast content
+                            toastTitle.textContent = `Event Updated`;
+                            toastTime.textContent = formattedDateTime;
+                            toastBody.textContent = `The event "${editFormData.eventName}" has been successfully updated.`;
+            
+                            // Show the toast notification
+                            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                            toastElement.addEventListener("hidden.bs.toast", function () {
+                                window.location.reload();
+                            });
+                            toast.show();
+                        }
+            
+                    } catch (error) {
+                        console.error("Error updating event:", error);
+                    }
+                });
+            })();
+          </script>            
+        </div>
+      </div>
+    </div>
+  </div>
+</edit-func>
+
+<!-- Initialize Date and Time Pickers for Edit Modal -->
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const options = {
+      display: {
+        components: {
+          calendar: true,
+          hours: true,
+          minutes: true,
+          seconds: false,
+        },
+        icons: {
+          time: 'fa fa-clock',
+        },
+      },
+      stepping: 5,
+    };
+
+    const startDatePickerElement = document.getElementById("editStartDatePicker");
+    const endDatePickerElement = document.getElementById("editEndDatePicker");
+
+    function formatDateTime(datetime) {
+      const date = new Date(datetime);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12; // Convert to 12-hour format
+
+      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
+    }
+
+    // Initialize Tempus Dominus for start date
+    if (startDatePickerElement) {
+      const startPicker = new tempusDominus.TempusDominus(startDatePickerElement, options);
+
+      startPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+
+    // Initialize Tempus Dominus for end date
+    if (endDatePickerElement) {
+      const endPicker = new tempusDominus.TempusDominus(endDatePickerElement, options);
+
+      endPicker.dates.formatInput = (date) => formatDateTime(date);
+    }
+  });
+</script>

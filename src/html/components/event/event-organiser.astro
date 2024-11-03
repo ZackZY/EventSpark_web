@@ -1,0 +1,128 @@
+---
+import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
+import Create from "@components/event/create.astro";
+import Edit from "@components/event/edit.astro";
+import Delete from "@components/event/delete.astro";
+import Attendee from "@components/attendee/attendee.astro";
+import Invite from "@components/attendee/invite.astro";
+import moment from 'moment';
+
+const { message = "" } = Astro.props;
+const path = "../../../dist";
+const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+const filteredOrganiserEvents = events.filter(
+  (data) => data.organiserId === "44b09874-45ac-4558-bd8c-b81b041870e9"
+);
+filteredOrganiserEvents.sort((a, b) => {
+  const dateA = new Date(a.eventDate);
+  const dateB = new Date(b.eventDate);
+
+  // Sort by eventDate in descending order
+  if (dateA > dateB) return -1;
+  if (dateA < dateB) return 1;
+
+  // If eventDate is the same, sort by eventName in ascending order
+  return a.eventName.localeCompare(b.eventName);
+});
+const mainPage = "event";
+const page = "event-organiser";
+---
+
+<get-func data-message={message}>
+  <div class="app-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <div class="card-header align-items-center">
+              <h3 class="card-title" id="pageTitle">Manage Events</h3>
+              <div class="card-tools">
+                <Create message="" />
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-striped" id="dataTable">
+                <thead>
+                  <tr>
+                    <th class="col-1" style="width: 30px;">#</th>
+                    <th class="col-1">Event Name</th>
+                    <th class="col-2">Event Description</th>
+                    <th class="col-1">Event Date</th>
+                    <th class="col-1">Start Time</th>
+                    <th class="col-1">End Time</th>
+                    <th class="col-1">Location</th>
+                    <th class="col-1" style="width: 100px;">Type</th>
+                    <th class="col-1" style="width: 150px;">Created At</th>
+                    <th class="col-1" style="width: 150px;">Updated At</th>
+                    <th class="col-1" style="width: 100px;">Attendee</th>
+                    <th class="col-1" style="width: 100px;">Info</th>
+                    <th class="col-1" style="width: 100px;">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    filteredOrganiserEvents.map((data, index) => (
+                      <tr class="align-middle">
+                        <td>{index + 1}</td>
+                        <td>{data.eventName}</td>
+                        <td>{data.eventDescription}</td>
+                        <td>{moment.utc(data.eventDate).format('MM/DD/YYYY')}</td>
+                        <td>{moment.utc(data.eventTimeStart).format('hh:mm A')}</td>
+                        <td>{moment.utc(data.eventTimeEnd).format('hh:mm A')}</td>
+                        <td>{data.eventLocation}</td>
+                        <td>{data.eventType.toUpperCase()}</td>
+                        <td>{moment.utc(data.createdAt).format('MM/DD/YYYY hh:mm A')}</td>
+                        <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
+                        <td>
+                          <Attendee message={JSON.stringify(data)} />
+                        </td>
+                        <td>
+                          {data.eventType.toUpperCase() === "PRIVATE" ? (
+                            <Invite message={JSON.stringify(data)} />
+                          ) : (
+                            <a 
+                              href={`registerEvent/register?eventhash=${data.id}`} 
+                              class="btn btn-outline-dark"
+                            >
+                              Register
+                            </a>
+                          )}
+                        </td>
+                        <td>
+                          <Edit message={JSON.stringify(data)} />
+                          {/* <Delete message={JSON.stringify(data)} /> */}
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="toast"
+        class="toast toast-success"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style="position: absolute; bottom: 20px; right: 20px;"
+      >
+        <div class="toast-header">
+          <div class="spinner-border spinner-border-sm text-light me-2"></div>
+          <strong class="me-auto" id="toastTitle">Update Event</strong>
+          <small id="toastTime">value</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script></script>
+</get-func>

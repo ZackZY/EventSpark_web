@@ -9,7 +9,7 @@ export const loginDomain = 'http://localhost:3001'
 export const apiUrlHelper = {
   EventsAPI: apiDomain + '/events/events',
   UsersAPI: apiDomain + '/users/users',
-  EventAttendeesAPI: apiDomain + '/eventAttendees/eventAttendees',
+  EventAttendeesAPI: apiDomain + '/eventAttendees',
   LoginAPI: loginDomain + '/auth/login',
   VerifyTokenAPI: loginDomain + '/auth/verify'
 }

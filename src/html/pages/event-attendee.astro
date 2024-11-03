@@ -4,62 +4,45 @@ import Footer from "@components/dashboard/_footer.astro";
 import Topbar from "@components/dashboard/_topbar.astro";
 import Sidenav from "@components/dashboard/_sidenav.astro";
 import Scripts from "@components/_scripts.astro";
-import MainFunction from "@components/organizer-management/main.astro";
+import Attendee from "@components/event/event-attendee.astro";
 
-const title = "EventSpark | Manage Organizers";
+const title = "Manage Events - Attendee";
 const path = "../../../dist";
 const mainPage = "dashboard";
-const page = "organizer-management";
+const page = "event";
 ---
 
 <!doctype html>
 <html lang="en">
-  <!--begin::Head-->
   <head>
     <Head title={title} path={path} />
   </head>
-  <!--end::Head-->
-  <!--begin::Body-->
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <Topbar path={path} />
       <Sidenav path={path} mainPage={mainPage} page={page} />
-      <!--begin::App Main-->
       <main class="app-main">
-        <!--begin::App Content Header-->
         <div class="app-content-header">
-          <!--begin::Container-->
           <div class="container-fluid">
-            <!--begin::Row-->
             <div class="row">
               <div class="col-sm-6">
-                <h3 class="mb-0">Manage Organizers</h3>
+                <h3 class="mb-0">Attendee Dashboard</h3>
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                  <li class="breadcrumb-item"><a href="#">Administrator</a></li>
+                  <li class="breadcrumb-item"><a href="#">Attendee</a></li>
                   <li class="breadcrumb-item active" aria-current="page">
-                    Manage Organizers
+                    Manage Events
                   </li>
                 </ol>
               </div>
             </div>
-            <!--end::Row-->
           </div>
-          <!--end::Container-->
         </div>
-        <!--end::App Content Header-->
-        <!--begin::App Content-->
-        <MainFunction />
-        <!--end::App Content-->
+        <Attendee />
       </main>
-      <!--end::App Main-->
       <Footer />
     </div>
-    <!--end::App Wrapper-->
-    <!--begin::Script-->
     <Scripts path={path} />
-    <!--end::Script-->
-  </body><!--end::Body-->
+  </body>
 </html>
