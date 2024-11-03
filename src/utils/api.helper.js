@@ -29,7 +29,8 @@
     EventAttendeesAPI: `${apiDomain}/eventAttendees/eventAttendees`,
     LoginAPI: `${loginDomain}/auth/login`,
     VerifyTokenAPI: `${loginDomain}/auth/verify`,
-    LogoutAPI: `${loginDomain}/auth/logout`
+    LogoutAPI: `${loginDomain}/auth/logout`,
+    CheckInAPI: `${loginDomain}/qrcheckin/checkin`
   }
 
   /**

@@ -1,6 +1,6 @@
 ---
-import {convertPathToHtml} from "../../../utils/index.js";
-const {path, mainPage, page} = Astro.props;
+import { convertPathToHtml } from "../../../utils/index.js";
+const { path, mainPage, page } = Astro.props;
 const htmlPath = convertPathToHtml(path);
 ---
 
@@ -35,51 +35,59 @@ const htmlPath = convertPathToHtml(path);
         data-accordion="false"
         id="navlist"
       >
+        <li class="nav-header" id="eventspark">EventSpark Menu</li>
+        <li class="nav-item">
+          <a
+            href={htmlPath + "/checkin.html"}
+            class:list={["nav-link", page === "checkin" && "active"]}
+          >
+            <i class="nav-icon bi bi-upc-scan"></i>
+            <p>Check In</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon bi bi-circle-fill"></i>
+            <p>
+              Events
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon bi bi-circle-fill"></i>
+            <p>
+              Administrator
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a
+                href={htmlPath + "/organizer-management.html"}
+                class:list={[
+                  "nav-link",
+                  page === "organizer-management" && "active",
+                ]}
+              >
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Manage Organizers</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon bi bi-circle-fill"></i>
+            <p>
+              Analytics
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+        </li>
 
-      <li class="nav-header" id="eventspark">EventSpark Menu</li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Events
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Administrator
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a
-              href={htmlPath + "/organizer-management.html"}
-              class:list={[
-                "nav-link",
-                page === "organizer-management" && "active",
-              ]}
-            >
-              <i class="nav-icon bi bi-people-fill"></i>
-              <p>Manage Organizers</p>
-            </a>
-          </li>
-        </ul>
-      </li> 
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Analytics
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-      </li> 
-
-      <li class="nav-header">Astro Sample</li>
+        <li class="nav-header">Astro Sample</li>
         <li class:list={["nav-item", mainPage === "dashboard" && "menu-open"]}>
           <a
             href="#"
@@ -179,9 +187,7 @@ const htmlPath = convertPathToHtml(path);
             <i class="nav-icon bi bi-clipboard-fill"></i>
             <p>
               Layout Options
-              <span class="nav-badge badge text-bg-secondary me-3"
-              >6</span
-              >
+              <span class="nav-badge badge text-bg-secondary me-3">6</span>
               <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
@@ -210,7 +216,10 @@ const htmlPath = convertPathToHtml(path);
             <li class="nav-item">
               <a
                 href={htmlPath + "/layout/layout-custom-area.html"}
-                class:list={["nav-link", page === "layout-custom-area" && "active"]}
+                class:list={[
+                  "nav-link",
+                  page === "layout-custom-area" && "active",
+                ]}
               >
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Layout <small>+ Custom Area </small></p>
@@ -373,7 +382,10 @@ const htmlPath = convertPathToHtml(path);
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href={htmlPath + "/examples/register.html"} class="nav-link">
+                  <a
+                    href={htmlPath + "/examples/register.html"}
+                    class="nav-link"
+                  >
                     <i class="nav-icon bi bi-circle"></i>
                     <p>Register</p>
                   </a>
@@ -390,13 +402,19 @@ const htmlPath = convertPathToHtml(path);
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href={htmlPath + "/examples/login-v2.html"} class="nav-link">
+                  <a
+                    href={htmlPath + "/examples/login-v2.html"}
+                    class="nav-link"
+                  >
                     <i class="nav-icon bi bi-circle"></i>
                     <p>Login</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href={htmlPath + "/examples/register-v2.html"} class="nav-link">
+                  <a
+                    href={htmlPath + "/examples/register-v2.html"}
+                    class="nav-link"
+                  >
                     <i class="nav-icon bi bi-circle"></i>
                     <p>Register</p>
                   </a>
