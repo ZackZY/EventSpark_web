@@ -9,7 +9,7 @@ export const loginDomain = 'https://bqqn2os7e1.execute-api.ap-southeast-1.amazon
 export const apiUrlHelper = {
   EventsAPI: apiDomain + '/events/events',
   UsersAPI: apiDomain + '/users/users',
-  EventAttendeesAPI: apiDomain + '/eventAttendees/eventAttendees',
+  EventAttendeesAPI: apiDomain + '/eventAttendees',
   LoginAPI: loginDomain + '/auth/login',
   VerifyTokenAPI: loginDomain + '/auth/verify'
 }

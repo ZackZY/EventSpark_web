@@ -1,0 +1,267 @@
+---
+import { apiUrlHelper } from "../../../utils/api.config";
+import Head from "@components/_head.astro";
+import Footer from "@components/dashboard/_footer.astro";
+import Topbar from "@components/dashboard/_topbar.astro";
+import Sidenav from "@components/dashboard/_sidenav.astro";
+import Scripts from "@components/_scripts.astro";
+
+const title = "Private Event Register Form";
+const path = "../../../dist";
+const mainPage = "register";
+const page = "register";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <Head title={title} path={path} />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+        <Topbar path={path} />
+        <Sidenav path={path} mainPage={mainPage} page={page} />
+        <main class="app-main">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Registration Event Form</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">Event Registration</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="container-fluid">
+                    <div class="row g-4">
+                        <div class="col-md-10">
+                            <div id="eventInfo" class="alert alert-info mb-4"></div>
+                            <div id="eventDetails" class="card mb-4" style="display: none;">
+                                <div class="card-header">
+                                    <h5 class="card-title" id="eventName">Event Name</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Description:</strong> <span id="eventDescription"></span></p>
+                                    <p><strong>Date:</strong> <span id="eventDate"></span></p>
+                                    <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+                                    <p><strong>Start Time:</strong> <span id="eventStartTime"></span></p>
+                                    <p><strong>End Time:</strong> <span id="eventEndTime"></span></p>
+                                </div>
+                            </div>
+
+                            <div class="card card-info card-outline mb-20">
+                                <div class="card-header">
+                                    <div class="card-title">Registration Form</div>
+                                </div>
+                                <form class="needs-validation" novalidate id="submitform">
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="attendeeName" class="form-label"><b>Name</b></label>
+                                                <input
+                                                  type="text"
+                                                  class="form-control"
+                                                  id="attendeeName"
+                                                  placeholder="Enter name"
+                                                  required
+                                                />
+                                                <div class="invalid-feedback">Please input a valid name.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="attendeeContact" class="form-label"><b>Contact</b></label>
+                                                <input
+                                                  type="tel"
+                                                  class="form-control"
+                                                  id="attendeeContact"
+                                                  placeholder="Enter contact Number"
+                                                  required
+                                                />
+                                                <div class="invalid-feedback">Please input a valid contact number.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="attendeeEmail" class="form-label"><b>Email</b></label>
+                                                <input
+                                                type="email"
+                                                class="form-control"
+                                                id="attendeeEmail"
+                                                placeholder="Enter email address"
+                                                aria-describedby="emailHelp"
+                                                required
+                                                />
+                                                <div class="invalid-feedback">Please input a valid email address.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-primary" type="submit">Register for Event</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                id="toast"
+                class="toast toast-success"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                style="position: absolute; bottom: 20px; right: 20px;"
+            >
+                <div class="toast-header">
+                <div class="spinner-border spinner-border-sm text-light me-2"></div>
+                <strong class="me-auto" id="toastTitle">Register</strong>
+                <small id="toastTime">value</small>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastBody">
+                </div>
+            </div>
+        </main>
+        <Footer />
+    </div>
+    <Scripts path={path} />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById("eventInfo").style.display = "none";
+            const url = new URL(window.location.href);
+            const eventHash = url.searchParams.get('eventhash');
+            let eventId = "";
+            let attendeeId = "";
+
+            function formatDate(datetime) {
+                const date = new Date(datetime);
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const year = date.getUTCFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            function formatTime(datetime) {
+                const date = new Date(datetime);
+                const hours = date.getUTCHours();
+                const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const formattedHour = hours % 12 || 12;
+                return `${formattedHour}:${minutes} ${ampm}`;
+            }
+
+
+            if (eventHash) {
+                if (eventHash.length === 73){
+                    // Extract eventId and attendeeId based on fixed lengths
+                eventId = eventHash.substring(0, 36);
+                attendeeId = eventHash.substring(37, 73);
+                }else {
+                    eventId = eventHash;
+                }
+                
+
+                console.log("Event ID:", eventId);
+                console.log("Attendee ID:", attendeeId);
+
+                try {
+                    let eventDetail;
+                    let attendeeData;
+
+                    if (eventId){
+                        eventDetail = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "GET");
+                        document.getElementById("eventName").textContent = eventDetail.eventName;
+                        document.getElementById("eventDescription").textContent = eventDetail.eventDescription;
+                        document.getElementById("eventDate").textContent = formatDate(eventDetail.eventDate);
+                        document.getElementById("eventLocation").textContent = eventDetail.eventLocation;
+                        document.getElementById("eventStartTime").textContent = formatTime(eventDetail.eventTimeStart);
+                        document.getElementById("eventEndTime").textContent = formatTime(eventDetail.eventTimeEnd);
+                        document.getElementById("eventDetails").style.display = "block";
+                    }
+                    if (attendeeId){
+                        attendeeData = await fetchFromApi(apiUrlHelper.UsersAPI + "/" + attendeeId, "GET");
+                        document.getElementById("attendeeName").value = attendeeData.name || '';
+                        document.getElementById("attendeeContact").value = attendeeData.contactNumber || '';
+                        document.getElementById("attendeeEmail").value = attendeeData.email || '';
+                        document.getElementById("attendeeEmail").readOnly = true;
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching event or attendee data:", error);
+                    document.getElementById("eventInfo").style.display = "block";
+                    document.getElementById("eventInfo").textContent = "Failed to load event details.";
+                }
+            }
+
+            const form = document.getElementById("submitform");
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.classList.add("was-validated");
+                    return;
+                }
+
+                const formData = {
+                    name: document.getElementById("attendeeName").value,
+                    contactNumber: document.getElementById("attendeeContact").value,
+                    email: document.getElementById("attendeeEmail").value
+                };
+
+                console.log("formData:", formData);
+
+                try {
+                    const response = await fetchFromApi(apiUrlHelper.EventAttendeesAPI + "/" + eventId, "POST", formData);
+
+                    if (response) {    
+                        // Display the toast notification with dynamic content
+                        const toastElement = document.getElementById("toast");
+                        toastElement.className = `toast toast-success`;
+        
+                        const toastTitle = document.getElementById("toastTitle");
+                        const toastBody = document.getElementById("toastBody");
+                        const toastTime = document.getElementById("toastTime");
+        
+                        const currentTimestamp = new Date();
+                        const formattedDateTime = currentTimestamp.toLocaleString([], {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                        });
+        
+                        // Update toast content
+                        toastTitle.textContent = `Event Registration`;
+                        toastTime.textContent = formattedDateTime;
+                        toastBody.textContent = `You has been successfully registered for event.`;
+        
+                        // Show the toast notification
+                        const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                        toastElement.addEventListener("hidden.bs.toast", function () {
+                            if (attendeeId) {
+                                window.location.href = "/index.html";
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                        toast.show();
+                    }
+                } catch (error) {
+                    console.error("Error submitting form:", error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
