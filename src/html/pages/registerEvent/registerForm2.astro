@@ -12,12 +12,21 @@ const path = "../../../dist";
 const mainPage = "registerEvent";
 const page = "registerForm";
 
-// Get hash from URL or props
-const hash = "123456789012345678901234567890ABCDEF123456789012345678901234567890abcdef";
+
+
+
+
+const url = new URL("http://localhost:3000/registerEvent/registerForm/bfvf6pzlk2dliv8rqjb3evmqs31h8kbi9zs7&8bb936dd-d796-4efb-a26a-80df1f45fe5d");
+//const url = "http://localhost:3000/registerEvent/registerForm/bfvf6pzlk2dliv8rqjb3evmqs31h8kbi9zs7&8bb936dd-d796-4efb-a26a-80df1f45fe5d"
+const pathSegments = url.pathname.split('/');
+const hash = pathSegments[pathSegments.length - 1];
+
+//const hash ="bfvf6pzlk2dliv8rqjb3evmqs31h8kbi9zs7&8bb936dd-d796-4efb-a26a-80df1f45fe5d";
+let [firstSet, secondSet] = hash.split('&');
 
 // Split into first set
-let firstSet = hash.substring(0, 36);
-let secondSet = hash.substring(36, 72);
+//let firstSet = hash.substring(0, 36);
+//let secondSet = hash.substring(36, 72);
 
 console.log("1st:", firstSet);
 console.log("2nd:", secondSet);
@@ -36,9 +45,9 @@ try {
     eventDetails = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + firstSet,  "GET");
     // console.log("events1: "+ JSON.stringify(events));
     //  eventDetails = JSON.stringify(events);
-    // console.log(eventDetails);
+    //console.log(eventDetails);
     attendeeData = await fetchFromApi(apiUrlHelper.UsersAPI + "/" + secondSet, "GET");
-  
+    //console.log(attendeeData);
     // console.log(eventDetails);
     // console.log("attendees: "+ JSON.stringify(attendee));
     //attendeeData = attendee;  // This should contain the attendee's details
@@ -46,6 +55,21 @@ try {
     err = "Error fetching data";
     console.error(err);
 }
+
+
+
+// try {
+//     eventDetails = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + firstSet, "GET");
+//     try {
+//         attendeeData = await fetchFromApi(apiUrlHelper.UsersAPI + "/" + secondSet, "GET");
+//     } catch (attendeeErr) {
+//         // If attendee not found, set attendeeData to null
+//         attendeeData = null;
+//     }
+// } catch (err) {
+//     error = "Error fetching event data";
+//     console.error(err);
+// }
 
 const formatTime24 = (dateString) => {
     const date = new Date(dateString);
@@ -71,7 +95,7 @@ const formatTime24 = (dateString) => {
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6">
-                                <h3 class="mb-0">Registration Event Form</h3>
+                                <h3 class="mb-0">{attendeeData ? 'Registration Event Form' : 'Sign Up Form'}</h3>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-end">
@@ -82,6 +106,11 @@ const formatTime24 = (dateString) => {
                         </div>
                     </div>
                 </div>
+                {attendeeData === null && (
+                    <div class="alert alert-warning m-3" role="alert">
+                        You haven't signed up yet. Please create an account to register for this event.
+                    </div>
+                )}
 
                 <div class="app-content">
                     <div class="container-fluid">
@@ -106,7 +135,7 @@ const formatTime24 = (dateString) => {
                                             <h5 class="card-title">Event Details 1</h5>
                                         </div>
                                         <div class="card-body">
-                                            <h2>Attendee Id: {eventDetails.id}</h2>
+                                            <h2>Event Id: {eventDetails.id}</h2>
                                             <h3>Event Name: {eventDetails.eventName}</h3>
                                             <p>Event Description: {eventDetails.eventDescription}</p>
                                             <p>Event Date: {eventDetails.eventDate}</p>
@@ -124,7 +153,13 @@ const formatTime24 = (dateString) => {
                                     </div>
                                     <form class="needs-validation" novalidate id="submitform">
                                         <div class="card-body">
-                                            {attendeeData && (
+                                            <div class="row g-3">
+                                            <!-- <input readonly id="attendeeId" value={attendeeData.id} />
+                                            <h2>Attendee Id: {attendeeData.id}</h2> -->
+                                              
+                                        </div>
+
+                                            <!-- {attendeeData && (
                                                 <div class="card mb-4">
                                                     <div class="card-header">
                                                         <h5 class="card-title">Event Details 2</h5>
@@ -133,45 +168,37 @@ const formatTime24 = (dateString) => {
                                                         <h3>attendee52 Name: {attendeeData.name}</h3>
                                                     </div>
                                                 </div>
-                                            )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                            )} -->
 
                                             <div class="row g-3">
                                                 {/* Hidden Attendee ID field */}
                                                 <input 
                                                     type="hidden" 
-                                                    id="attendeeId" 
-                                                    value={attendeeData?.Id || ''}
+                                                    id="attendeeId1" 
+                                                    value={attendeeData?.id || ''}
                                                 />
-                                               
-                                                
                                                 <div class="col-md-6">
-                                                    <label for="validationName" class="form-label">Name</label>
+                                                    <label class="form-label">AttendeeID</label>
+                                                    <input 
+                                                        type="text" 
+                                                        class="form-control" 
+                                                        id="attendeeId" 
+                                                        value={attendeeData?.id || ''}
+                                                        readonly
+                                                   />
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Name</label>
                                                     <input 
                                                         type="text" 
                                                         class="form-control" 
                                                         id="validationName" 
                                                         required 
                                                         value={attendeeData?.name || ''}
-                                                       
                                                     />
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                    <!-- <div class="valid-feedback">Looks good!</div> -->
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="validationEmail" class="form-label">Email Address</label>
+                                                    <label class="form-label">Email Address</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">@</span>
                                                         <input 
@@ -179,28 +206,43 @@ const formatTime24 = (dateString) => {
                                                             class="form-control" 
                                                             id="validationEmail" 
                                                             required 
-                                                            value={attendeeData?.email || ''}
-                                                            
+                                                            value={attendeeData?.email || ''} 
+                                                            readonly={attendeeData !== null}
                                                         />
-                                                        <div class="invalid-feedback">Please enter valid email address.</div>
+                                                        <!-- <div class="invalid-feedback">Please enter valid email address.</div> -->
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="validationContact" class="form-label">Contact number</label>
+                                                    <label class="form-label">Contact number</label>
                                                     <input 
                                                         type="tel" 
                                                         class="form-control" 
                                                         id="validationContact" 
                                                         required 
-                                                        value={attendeeData?.contactNumber || ''}
-                                                        
+                                                        value={attendeeData?.contactNumber || ''}  
+                                                        readonly={attendeeData !== null}
                                                     />
-                                                    <div class="invalid-feedback">Please provide a valid contact number.</div>
+                                                    <!-- <div class="invalid-feedback">Please provide a valid contact number.</div> -->
                                                 </div>
+
+                                                {!attendeeData && (
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Password</label>
+                                                        <input 
+                                                            type="password" 
+                                                            class="form-control" 
+                                                            id="validationPassword" 
+                                                            required 
+                                                            minlength="6"
+                                                        />
+                                                        <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div class="card-footer">
-                                            <button class="btn btn-info" type="submit">Submit</button>
+                                            <button class="btn btn-info" type="submit"> 
+                                                {attendeeData ? 'Register for Event' : 'Sign Up'}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -213,12 +255,13 @@ const formatTime24 = (dateString) => {
         </div>
         <Scripts path={path} />
 
-        <script is:inline define:vars={{ hash: hash, attendeeData: attendeeData }}>
+        <script is:inline>
             (() => {
                 "use strict";
 
                 const form = document.getElementById("submitform");
-
+                console.log(form);
+                console.log(attendeeId.value);
                 form.addEventListener("submit", async (event) => {
                     event.preventDefault();
 
@@ -227,27 +270,57 @@ const formatTime24 = (dateString) => {
                         form.classList.add("was-validated");
                         return;
                     }
+                    console.log("submitform1: ", document.getElementById("submitform"));
 
                     const formData = {
-                        attendeeId: document.getElementById("id").value,
+                        //id: document.getElementById("submitform"),
+                        attendeeId:document.getElementById("attendeeId").value,
                         name: document.getElementById("validationName").value,
                         email: document.getElementById("validationEmail").value,
                         contactNumber: document.getElementById("validationContact").value,
-                        eventAttendeeHash: hash
+                        //eventAttendeeHash: hash
                     };
 
-                    try {
-                        const response = await fetch('/api/register', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(formData)
-                        });
+                    const isRegistered = {
+                        
+                        attendeeId:document.getElementById("attendeeId").value,
+                        dateTimeRegistered: currentTime.toLocaleString(),
+                        status: Registered
+                        
+                        //eventAttendeeHash: hash
+                    };
 
-                        if (response.ok) {
-                            alert('Registration successful!');
-                            window.location.reload();
+                    console.log("formData1: ", formData.id);
+
+                    console.log("formDatatttttt: ", formData.attendeeId);
+                    console.log("formData2:" + formData.name); 
+                    console.log("formData3:" + formData.email); 
+                    console.log("formData4:" + formData.contactNumber); 
+
+
+                    try {
+                      const response = await fetchFromApi(
+                      apiUrlHelper.UsersAPI + "/" + attendeeId.value,
+                      "PUT",
+                      formData
+                    );
+
+
+                    try {
+                      const response = await fetchFromApi(
+                      apiUrlHelper.UsersAPI + "/" + attendeeId.value,
+                      "PUT",
+                      formData
+                    );
+                    console.log("formData:" + JSON.stringify(formData));    
+                    console.log("response:" + JSON.stringify(response));   
+
+                    if (response.id) {
+                            alert('Registration successful!'+ response.id);
+                            //window.location.reload();
+                            setTimeout(function() {
+                            window.location.href = "http://localhost:3000/index.html";
+                             }, 2000); 
                         } else {
                             throw new Error('Registration failed');
                         }
