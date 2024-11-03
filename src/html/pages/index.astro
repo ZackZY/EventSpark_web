@@ -82,6 +82,7 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
+      <Topbar path={path} />
       <Sidenav path={path} mainPage={mainPage} page={page} />
       <main class="app-main">
         <div class="app-content-header">

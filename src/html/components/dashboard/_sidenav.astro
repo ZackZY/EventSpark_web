@@ -53,6 +53,14 @@ const htmlPath = convertPathToHtml(path);
               <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href={htmlPath + "/event-organiser.html"} class="nav-link">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Manage Events</p>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
@@ -86,49 +94,6 @@ const htmlPath = convertPathToHtml(path);
             </p>
           </a>
         </li>
-
-      <li class="nav-header" id="eventspark">EventSpark Menu</li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Events
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href={htmlPath + "/event-organiser.html"} class="nav-link">
-              <i class="nav-icon bi bi-circle"></i>
-              <p>For Organiser</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href={htmlPath + "/event-attendee.html"} class="nav-link">
-              <i class="nav-icon bi bi-circle"></i>
-              <p>For Attendee</p>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Administrator
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-      </li> 
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon bi bi-circle-fill"></i>
-          <p>
-            Analytics
-            <i class="nav-arrow bi bi-chevron-right"></i>
-          </p>
-        </a>
-      </li> 
 
       <!-- <li class="nav-header">Astro Sample</li>
         <li class:list={["nav-item", mainPage === "dashboard" && "menu-open"]}>
