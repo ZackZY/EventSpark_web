@@ -10,6 +10,20 @@ import moment from 'moment';
 const { message = "" } = Astro.props;
 const path = "../../../dist";
 const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+const filteredOrganiserEvents = events.filter(
+  (data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607"
+);
+filteredOrganiserEvents.sort((a, b) => {
+  const dateA = new Date(a.eventDate);
+  const dateB = new Date(b.eventDate);
+
+  // Sort by eventDate in descending order
+  if (dateA > dateB) return -1;
+  if (dateA < dateB) return 1;
+
+  // If eventDate is the same, sort by eventName in ascending order
+  return a.eventName.localeCompare(b.eventName);
+});
 const mainPage = "event";
 const page = "event-organiser";
 ---
@@ -47,7 +61,7 @@ const page = "event-organiser";
                 </thead>
                 <tbody>
                   {
-                    events.filter((data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607").map((data, index) => (
+                    filteredOrganiserEvents.map((data, index) => (
                       <tr class="align-middle">
                         <td>{index + 1}</td>
                         <td>{data.eventName}</td>

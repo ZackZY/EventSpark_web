@@ -11,7 +11,7 @@ const path = "../../dist";
 const mainPage = "dashboard";
 const page = "index";
 const organiserEvents = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
-const attendeeEvents = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + "0b0072e9-25da-42ab-868c-155fa464adcc", "GET");
+const attendeeEvents = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + "78f27d0f-5dcc-4c33-9908-739b6d0de607", "GET");
 
 // Filter organiser events by organiserId and get the count
 const filteredOrganiserEvents = organiserEvents.filter(
