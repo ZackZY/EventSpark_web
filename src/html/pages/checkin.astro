@@ -94,7 +94,7 @@ const year = new Date().getFullYear();
                       }
 
                       try {
-                          const formEventHash = inputField.value; // Get value from the input field
+                          const formEventHash = inputField.value.toLowerCase().trim();// Get value from the input field
                           const checkinResponse = await checkInUser(formEventHash);
 
                           if (checkinResponse.statusCode === "201") {
