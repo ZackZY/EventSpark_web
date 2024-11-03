@@ -148,7 +148,9 @@ const page = "index";
                   : [];
 
                 const totalParticipants = attendees.length;
-                const registeredCount = attendees.filter((p) => p.status?.toUpperCase() !== "INVITED").length;
+                const registeredCount = attendees.filter(
+                  (p) => p.status?.toUpperCase() === "REGISTERED" || p.status?.toUpperCase() === "ATTENDED"
+                ).length;
                 const attendedCount = attendees.filter((p) => p.status?.toUpperCase() === "ATTENDED").length;
 
                 return {
