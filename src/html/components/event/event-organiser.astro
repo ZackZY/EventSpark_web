@@ -5,7 +5,6 @@ import Edit from "@components/event/edit.astro";
 import Delete from "@components/event/delete.astro";
 import Attendee from "@components/attendee/attendee.astro";
 import Invite from "@components/attendee/invite.astro";
-//npm install moment
 import moment from 'moment';
 
 const { message = "" } = Astro.props;
@@ -51,26 +50,33 @@ const page = "event-organiser";
                     events.filter((data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607").map((data, index) => (
                       <tr class="align-middle">
                         <td>{index + 1}</td>
-                        <td>
-                          {data.eventName}
-                        </td>
+                        <td>{data.eventName}</td>
                         <td>{data.eventDescription}</td>
                         <td>{moment.utc(data.eventDate).format('MM/DD/YYYY')}</td>
                         <td>{moment.utc(data.eventTimeStart).format('hh:mm A')}</td>
                         <td>{moment.utc(data.eventTimeEnd).format('hh:mm A')}</td>
                         <td>{data.eventLocation}</td>
-                        <td>{data.eventType}</td>
+                        <td>{data.eventType.toUpperCase()}</td>
                         <td>{moment.utc(data.createdAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>
                           <Attendee message={JSON.stringify(data)} />
                         </td>
                         <td>
-                          <Invite message={JSON.stringify(data)} />
+                          {data.eventType.toUpperCase() === "PRIVATE" ? (
+                            <Invite message={JSON.stringify(data)} />
+                          ) : (
+                            <a 
+                              href={`registerEvent/register?eventhash=${data.id}`} 
+                              class="btn btn-outline-dark"
+                            >
+                              Register
+                            </a>
+                          )}
                         </td>
-                        <td>             
+                        <td>
                           <Edit message={JSON.stringify(data)} />
-                          {/* <Delete message={JSON.stringify(data)} />                          */}
+                          {/* <Delete message={JSON.stringify(data)} /> */}
                         </td>
                       </tr>
                     ))
@@ -99,8 +105,7 @@ const page = "event-organiser";
             data-bs-dismiss="toast"
             aria-label="Close"></button>
         </div>
-        <div class="toast-body" id="toastBody">
-        </div>
+        <div class="toast-body" id="toastBody"></div>
       </div>
     </div>
   </div>

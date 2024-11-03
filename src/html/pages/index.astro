@@ -40,15 +40,18 @@ const fetchEventDetails = async (events) => {
           ? eventUsers.filter((data) => data.typeOfAttendee === 'attendee')
           : [];
 
-        // Calculate progress based on "accepted" status
+        
         const totalParticipants = attendees?.length || 0;
-        const acceptedCount = attendees?.filter((p) => p.status !== "invited").length || 0;
-        const progress = totalParticipants > 0 ? (acceptedCount / totalParticipants) * 100 : 0;
+        const registeredCount = attendees?.filter((p) => p.status?.toUpperCase() !== "INVITED").length || 0;
+        const attendedCount = attendees?.filter((p) => p.status?.toUpperCase() === "ATTENDED").length || 0;
 
-        return { ...event, progress };
+        const registeredProgress = totalParticipants > 0 ? (registeredCount / totalParticipants) * 100 : 0;
+        const attendedProgress = totalParticipants > 0 ? (attendedCount / totalParticipants) * 100 : 0;
+
+        return { ...event, registeredProgress,  attendedProgress};
       } catch (error) {
         console.error(`Error fetching details for event ID ${event.id}:`, error);
-        return { ...event, progress: 0 };
+        return { ...event, registeredProgress: 0, attendedProgress: 0 };
       }
     })
   );
@@ -158,6 +161,8 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Event Name</th>
+                          <th>Registration Rate</th>
+                          <th style="width: 40px"></th>
                           <th>Attendance Rate</th>
                           <th style="width: 40px"></th>
                         </tr>
@@ -170,14 +175,27 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                             <td>
                               <div class="progress progress-xs">
                                 <div
-                                  class={`progress-bar ${getProgressBarClass(event.progress)}`}
-                                  style={`width: ${event.progress}%`}
+                                  class={`progress-bar ${getProgressBarClass(event.registeredProgress)}`}
+                                  style={`width: ${event.registeredProgress}%`}
                                 ></div>
                               </div>
                             </td>
                             <td>
-                              <span class={`badge ${getBadgeClass(event.progress)}`}>
-                                {Math.round(event.progress)}%
+                              <span class={`badge ${getBadgeClass(event.registeredProgress)}`}>
+                                {Math.round(event.registeredProgress)}%
+                              </span>
+                            </td>
+                            <td>
+                              <div class="progress progress-xs">
+                                <div
+                                  class={`progress-bar ${getProgressBarClass(event.attendedProgress)}`}
+                                  style={`width: ${event.attendedProgress}%`}
+                                ></div>
+                              </div>
+                            </td>
+                            <td>
+                              <span class={`badge ${getBadgeClass(event.attendedProgress)}`}>
+                                {Math.round(event.attendedProgress)}%
                               </span>
                             </td>
                           </tr>
