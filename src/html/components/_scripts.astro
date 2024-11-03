@@ -58,7 +58,7 @@ const adminlteJsUrl = path + "/js/adminlte.js";
     scrollbarAutoHide: "leave",
     scrollbarClickScroll: true,
   };
-  document.addEventListener("load", async function () {
+  window.addEventListener("load", async function () {
     if (!window.location.pathname.includes('/auth/login')) {
       try {
         const isAuthenticated = await window.checkAuth();
