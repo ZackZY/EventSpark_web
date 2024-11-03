@@ -6,7 +6,7 @@ import Sidenav from "@components/dashboard/_sidenav.astro";
 import Scripts from "@components/_scripts.astro";
 import Organiser from "@components/event/event-organiser.astro";
 
-const title = "Manage Events";
+const title = "Manage Events - Organiser";
 const path = "../../../dist";
 const mainPage = "dashboard";
 const page = "event";
@@ -19,7 +19,7 @@ const page = "event";
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
-      <Topbar path={path} />
+      <!-- <Topbar path={path} /> -->
       <Sidenav path={path} mainPage={mainPage} page={page} />
       <main class="app-main">
         <div class="app-content-header">

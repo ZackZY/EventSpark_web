@@ -6,7 +6,7 @@ import Sidenav from "@components/dashboard/_sidenav.astro";
 import Scripts from "@components/_scripts.astro";
 import Attendee from "@components/event/event-attendee.astro";
 
-const title = "Manage Events";
+const title = "Manage Events - Attendee";
 const path = "../../../dist";
 const mainPage = "dashboard";
 const page = "event";
@@ -19,7 +19,7 @@ const page = "event";
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
-      <Topbar path={path} />
+      <!-- <Topbar path={path} /> -->
       <Sidenav path={path} mainPage={mainPage} page={page} />
       <main class="app-main">
         <div class="app-content-header">
@@ -30,7 +30,7 @@ const page = "event";
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                  <li class="breadcrumb-item"><a href="#">Administrator</a></li>
+                  <li class="breadcrumb-item"><a href="#">Attendee</a></li>
                   <li class="breadcrumb-item active" aria-current="page">
                     Manage Events
                   </li>
