@@ -170,6 +170,8 @@ const { message = "" } = Astro.props;
                   "use strict";
               
                   const form = document.getElementById("createform");
+                  const userId = localStorage.getItem('id') || '';
+                  console.log("create userId: ", userId);
               
                   form.addEventListener("submit", async (event) => {
                       event.preventDefault();
@@ -230,7 +232,7 @@ const { message = "" } = Astro.props;
                       }
               
                       const formData = {
-                          organiserId: "78f27d0f-5dcc-4c33-9908-739b6d0de607",
+                          organiserId: userId,
                           eventName: document.getElementById("eventName").value,
                           eventDescription: document.getElementById("eventDescription").value,
                           eventDate: setDateOnly(startDate),

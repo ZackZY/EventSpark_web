@@ -10,69 +10,6 @@ const title = "EventSpark | Dashboard";
 const path = "../../dist";
 const mainPage = "dashboard";
 const page = "index";
-const organiserEvents = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
-const attendeeEvents = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + "78f27d0f-5dcc-4c33-9908-739b6d0de607", "GET");
-
-// Filter organiser events by organiserId and get the count
-const filteredOrganiserEvents = organiserEvents.filter(
-  (data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607"
-);
-const organiserEventCount = filteredOrganiserEvents.length;
-
-// Get today's date without time (for comparison purposes)
-const today = new Date();
-today.setHours(0, 0, 0, 0); // Set time to midnight
-
-// Filter attendeeEvents to only include events with a date later than today
-const upcomingAttendeeEventCount = attendeeEvents.filter((event) => {
-  const eventDate = new Date(event.eventDate);
-  return eventDate > today;
-}).length;
-
-// Fetch additional details for each event by ID and calculate progress
-const fetchEventDetails = async (events) => {
-  const eventDetails = await Promise.all(
-    events.map(async (event) => {
-      try {
-        const eventUsers = await fetchFromApi(apiUrlHelper.EventAttendeesAPI + "/" + event.id, "GET");
-
-        const attendees = Array.isArray(eventUsers)
-          ? eventUsers.filter((data) => data.typeOfAttendee === 'attendee')
-          : [];
-
-        
-        const totalParticipants = attendees?.length || 0;
-        const registeredCount = attendees?.filter((p) => p.status?.toUpperCase() !== "INVITED").length || 0;
-        const attendedCount = attendees?.filter((p) => p.status?.toUpperCase() === "ATTENDED").length || 0;
-
-        const registeredProgress = totalParticipants > 0 ? (registeredCount / totalParticipants) * 100 : 0;
-        const attendedProgress = totalParticipants > 0 ? (attendedCount / totalParticipants) * 100 : 0;
-
-        return { ...event, registeredProgress,  attendedProgress};
-      } catch (error) {
-        console.error(`Error fetching details for event ID ${event.id}:`, error);
-        return { ...event, registeredProgress: 0, attendedProgress: 0 };
-      }
-    })
-  );
-  return eventDetails;
-};
-
-// Function to determine the appropriate progress bar class
-function getProgressBarClass(progress) {
-  if (progress < 30) return "bg-danger";
-  if (progress >= 30 && progress < 60) return "bg-warning";
-  if (progress >= 60 && progress < 85) return "bg-primary";
-  return "bg-success";
-}
-function getBadgeClass(progress) {
-  if (progress < 30) return "text-bg-danger";
-  if (progress >= 30 && progress < 60) return "text-bg-warning";
-  if (progress >= 60 && progress < 85) return "text-bg-primary";
-  return "text-bg-success";
-}
-// Get detailed data for each event
-const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEvents);
 ---
 
 <!doctype html>
@@ -107,21 +44,10 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
               <div class="col-lg-3 col-6">
                 <div class="small-box text-bg-primary">
                   <div class="inner">
-                    <h3>{organiserEventCount}</h3>
+                    <h3 id="organiserEventCount">0</h3>
                     <p>Event Owned</p>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
-                    ></path>
-                  </svg>
-                  <a href={"/event-organiser.html"} class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                  <a href="/event-organiser.html" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
                     More info <i class="bi bi-link-45deg"></i>
                   </a>
                 </div>
@@ -129,28 +55,18 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
               <div class="col-lg-3 col-6">
                 <div class="small-box text-bg-warning">
                   <div class="inner">
-                    <h3>{upcomingAttendeeEventCount}</h3>
+                    <h3 id="upcomingAttendeeEventCount">0</h3>
                     <p>Pending Attend</p>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M19 3h-1V1.5a.75.75 0 00-1.5 0V3H7V1.5a.75.75 0 00-1.5 0V3H5a3 3 0 00-3 3v13a3 3 0 003 3h14a3 3 0 003-3V6a3 3 0 00-3-3zm1.5 16a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V9h17v10zM4.5 8V6A1.5 1.5 0 016 4.5h1.5V6a.75.75 0 001.5 0V4.5h8V6a.75.75 0 001.5 0V4.5H18A1.5 1.5 0 0119.5 6v2h-15z"
-                    ></path>
-                  </svg>
-                  <a href={"/event-attendee.html"} class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                  <a href="/event-attendee.html" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
                     More info <i class="bi bi-link-45deg"></i>
                   </a>
                 </div>
               </div>
             </div>
-            {organiserEventCount > 0 && (
-            <div class="row">
+
+            <!-- Conditional Event List Display -->
+            <div id="eventListContainer" class="row" style="display: none;">
               <div class="col-lg-6">
                 <div class="card mb-4">
                   <div class="card-header">
@@ -168,51 +84,132 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                           <th style="width: 40px"></th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {organiserEventsWithDetails.map((event, index) => (
-                          <tr class="align-middle">
-                            <td>{index + 1}</td>
-                            <td>{event.eventName}</td>
-                            <td>
-                              <div class="progress progress-xs">
-                                <div
-                                  class={`progress-bar ${getProgressBarClass(event.registeredProgress)}`}
-                                  style={`width: ${event.registeredProgress}%`}
-                                ></div>
-                              </div>
-                            </td>
-                            <td>
-                              <span class={`badge ${getBadgeClass(event.registeredProgress)}`}>
-                                {Math.round(event.registeredProgress)}%
-                              </span>
-                            </td>
-                            <td>
-                              <div class="progress progress-xs">
-                                <div
-                                  class={`progress-bar ${getProgressBarClass(event.attendedProgress)}`}
-                                  style={`width: ${event.attendedProgress}%`}
-                                ></div>
-                              </div>
-                            </td>
-                            <td>
-                              <span class={`badge ${getBadgeClass(event.attendedProgress)}`}>
-                                {Math.round(event.attendedProgress)}%
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                      <tbody id="eventListBody">
+                        <!-- Event rows will be populated here -->
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
-            )}
+
           </div>
         </div>
       </main>
       <Footer />
     </div>
     <Scripts path={path} />
+    
+    <!-- Client-side script to dynamically load content -->
+    <script client:load>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userId = localStorage.getItem('id') || '';
+        
+        let organiserEventCount = 0;
+        let upcomingAttendeeEventCount = 0;
+
+        const organiserEvents = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+        const attendeeEvents = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + userId, "GET");
+
+        // Filter organiser events by organiserId and get the count
+        const filteredOrganiserEvents = organiserEvents.filter(
+          (data) => data.organiserId === userId
+        );
+        organiserEventCount = filteredOrganiserEvents.length;
+
+        // Update organiser event count in the DOM
+        document.getElementById("organiserEventCount").innerText = organiserEventCount;
+
+        // Get today's date without time (for comparison purposes)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Filter attendeeEvents to only include events with a date later than today
+        upcomingAttendeeEventCount = attendeeEvents.filter((event) => {
+          const eventDate = new Date(event.eventDate);
+          return eventDate > today;
+        }).length;
+
+        // Update attendee event count in the DOM
+        document.getElementById("upcomingAttendeeEventCount").innerText = upcomingAttendeeEventCount;
+
+        // Display the event list only if organiserEventCount > 0
+        if (organiserEventCount > 0) {
+          document.getElementById("eventListContainer").style.display = "block";
+
+          // Fetch additional details for each event by ID
+          const fetchEventDetails = async (events) => {
+            return await Promise.all(events.map(async (event) => {
+              try {
+                const eventUsers = await fetchFromApi(apiUrlHelper.EventAttendeesAPI + "/" + event.id, "GET");
+
+                const attendees = Array.isArray(eventUsers)
+                  ? eventUsers.filter((data) => data.typeOfAttendee === 'attendee')
+                  : [];
+
+                const totalParticipants = attendees.length;
+                const registeredCount = attendees.filter((p) => p.status?.toUpperCase() !== "INVITED").length;
+                const attendedCount = attendees.filter((p) => p.status?.toUpperCase() === "ATTENDED").length;
+
+                return {
+                  ...event,
+                  registeredProgress: (registeredCount / totalParticipants) * 100 || 0,
+                  attendedProgress: (attendedCount / totalParticipants) * 100 || 0
+                };
+              } catch (error) {
+                console.error(`Error fetching details for event ID ${event.id}:`, error);
+                return { ...event, registeredProgress: 0, attendedProgress: 0 };
+              }
+            }));
+          };
+
+          const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEvents);
+
+          // Populate event list table with data
+          const eventListBody = document.getElementById("eventListBody");
+          organiserEventsWithDetails.forEach((event, index) => {
+            const row = document.createElement("tr");
+            row.classList.add("align-middle");
+
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${event.eventName}</td>
+              <td>
+                <div class="progress progress-xs">
+                  <div class="progress-bar ${getProgressBarClass(event.registeredProgress)}" style="width: ${event.registeredProgress}%"></div>
+                </div>
+              </td>
+              <td>
+                <span class="badge ${getBadgeClass(event.registeredProgress)}">${Math.round(event.registeredProgress)}%</span>
+              </td>
+              <td>
+                <div class="progress progress-xs">
+                  <div class="progress-bar ${getProgressBarClass(event.attendedProgress)}" style="width: ${event.attendedProgress}%"></div>
+                </div>
+              </td>
+              <td>
+                <span class="badge ${getBadgeClass(event.attendedProgress)}">${Math.round(event.attendedProgress)}%</span>
+              </td>
+            `;
+            eventListBody.appendChild(row);
+          });
+        }
+
+        // Utility functions for progress bar class
+        function getProgressBarClass(progress) {
+          if (progress < 30) return "bg-danger";
+          if (progress >= 30 && progress < 60) return "bg-warning";
+          if (progress >= 60 && progress < 85) return "bg-primary";
+          return "bg-success";
+        }
+
+        function getBadgeClass(progress) {
+          if (progress < 30) return "text-bg-danger";
+          if (progress >= 30 && progress < 60) return "text-bg-warning";
+          if (progress >= 60 && progress < 85) return "text-bg-primary";
+          return "text-bg-success";
+        }
+      })();
+    </script>
   </body>
 </html>

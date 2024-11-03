@@ -11,7 +11,7 @@ const { message = "" } = Astro.props;
 const path = "../../../dist";
 const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
 const filteredOrganiserEvents = events.filter(
-  (data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607"
+  (data) => data.organiserId === "44b09874-45ac-4558-bd8c-b81b041870e9"
 );
 filteredOrganiserEvents.sort((a, b) => {
   const dateA = new Date(a.eventDate);

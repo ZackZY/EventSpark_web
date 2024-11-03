@@ -1,25 +1,9 @@
 ---
 import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
-//npm install moment
 import moment from 'moment';
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + "78f27d0f-5dcc-4c33-9908-739b6d0de607", "GET");
-
-// Sort events by eventDate (desc) and eventName (asc)
-events.sort((a, b) => {
-  const dateA = new Date(a.eventDate);
-  const dateB = new Date(b.eventDate);
-
-  // Sort by eventDate in descending order
-  if (dateA > dateB) return -1;
-  if (dateA < dateB) return 1;
-
-  // If eventDate is the same, sort by eventName in ascending order
-  return a.eventName.localeCompare(b.eventName);
-});
-
 const mainPage = "event";
 const page = "event-attendee";
 ---
@@ -51,28 +35,6 @@ const page = "event-attendee";
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    events.map((data, index) => (
-                      <tr class="align-middle">
-                        <td>{index + 1}</td>
-                        <td>
-                          {data.eventName}
-                        </td>
-                        <td>{data.eventDescription}</td>
-                        <td>{moment.utc(data.eventDate).format('MM/DD/YYYY')}</td>
-                        <td>{moment.utc(data.eventTimeStart).format('hh:mm A')}</td>
-                        <td>{moment.utc(data.eventTimeEnd).format('hh:mm A')}</td>
-                        <td>{data.eventLocation}</td>
-                        <td>{data.eventType}</td>
-                        <td>{data.EventAttendees.status}</td>
-                        <td>{moment.utc(data.EventAttendees.dateTimeInvited).format('MM/DD/YYYY hh:mm A')}</td>
-                        <td>{data.EventAttendees.dateTimeAttended ? moment.utc(data.EventAttendees.dateTimeAttended).format('MM/DD/YYYY hh:mm A') : ''}</td>
-
-                        <td>
-                        </td>
-                      </tr>
-                    ))
-                  }
                 </tbody>
               </table>
             </div>
@@ -97,11 +59,82 @@ const page = "event-attendee";
             data-bs-dismiss="toast"
             aria-label="Close"></button>
         </div>
-        <div class="toast-body" id="toastBody">
-        </div>
+        <div class="toast-body" id="toastBody"></div>
       </div>
     </div>
   </div>
 
-  <script></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Get userId from localStorage
+      const userId = localStorage.getItem('id') || '';
+      console.log("userId: ", userId);
+
+      // Fetch updated events data for the user
+      const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + userId, "GET");
+
+      // Sort events by eventDate (desc) and eventName (asc)
+      events.sort((a, b) => {
+        const dateA = new Date(a.eventDate);
+        const dateB = new Date(b.eventDate);
+        if (dateA > dateB) return -1;
+        if (dateA < dateB) return 1;
+        return a.eventName.localeCompare(b.eventName);
+      });
+
+      function formatDate(dateString) {
+        // Check if dateString is null or empty
+        if (!dateString) {
+            return "";
+        }
+
+        const date = new Date(dateString);
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const year = date.getUTCFullYear();
+
+        let hours = date.getUTCHours();
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        return `${day}/${month}/${year} ${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+      }
+
+      function getDateOnly(datetimeString) {
+          const date = new Date(datetimeString);
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `${year}-${month}-${day}`;
+      };
+
+      function getTimeOnly(datetimeString) {
+          const date = new Date(datetimeString);
+          return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      }
+
+      // Populate the table dynamically
+      const eventTableBody = document.getElementById("dataTable").querySelector("tbody");
+      eventTableBody.innerHTML = ''; // Clear existing rows
+      events.forEach((data, index) => {
+        const row = document.createElement("tr");
+        row.className = "align-middle";
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${data.eventName}</td>
+          <td>${data.eventDescription}</td>
+          <td>${getDateOnly(data.eventDate)}</td>
+          <td>${getTimeOnly(data.eventTimeStart)}</td>
+          <td>${getTimeOnly(data.eventTimeEnd)}</td>
+          <td>${data.eventLocation}</td>
+          <td>${data.eventType}</td>
+          <td>${data.EventAttendees?.status || ''}</td>
+          <td>${data.EventAttendees?.dateTimeInvited ? formatDate(data.EventAttendees.dateTimeInvited): ''}</td>
+          <td>${data.EventAttendees?.dateTimeAttended ? formatDate(data.EventAttendees.dateTimeAttended) : ''}</td>
+        `;
+        eventTableBody.appendChild(row);
+      });
+    });
+  </script>
 </get-func>
