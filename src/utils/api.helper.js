@@ -4,7 +4,7 @@
   const ENV_CONFIG = {
     staging: {
       hostname: 'ecs-frontend-lb-735742951.ap-southeast-1.elb.amazonaws.com',
-      apiDomain: 'https://api.staging.com',
+      apiDomain: 'https://e9fxf33txg.execute-api.ap-southeast-1.amazonaws.com',
       loginDomain: 'https://bqqn2os7e1.execute-api.ap-southeast-1.amazonaws.com/stg'
     },
     development: {
