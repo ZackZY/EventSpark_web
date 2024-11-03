@@ -195,7 +195,7 @@ const { message = "" } = Astro.props;
                           const [day, month, year] = datePart.split("/");
 
                           // Constructing a Date object from parsed parts
-                          const date = new Date(`${year}-${month}-${day}T${timePart}`);
+                          const date = new Date(`${year}-${month}-${day}`);
                           
                           // Formatting to YYYY-MM-DD
                           const formattedDay = String(date.getDate()).padStart(2, '0');
