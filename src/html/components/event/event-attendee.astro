@@ -5,8 +5,7 @@ import moment from 'moment';
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const userId = localStorage.getItem('id') || '';
-const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + userId, "GET");
+const events = await fetchFromApi(apiUrlHelper.EventsAPI + "/user/" + "78f27d0f-5dcc-4c33-9908-739b6d0de607", "GET");
 const mainPage = "event";
 const page = "event-attendee";
 ---

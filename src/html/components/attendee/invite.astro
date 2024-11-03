@@ -58,9 +58,9 @@ const { message = "" } = Astro.props;
                     isSubmitting = true; // Set flag to prevent re-submission
                     const email = document.getElementById("newAttendeeEmail").value;
             
-                    const formData = [
-                        { email: email }
-                    ];
+                    const formData = {attendees:[
+                    { email: email }
+                    ]};
             
                     if (!form.checkValidity()) {
                         event.stopPropagation();

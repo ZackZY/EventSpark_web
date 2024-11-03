@@ -12,7 +12,6 @@ const path = "../../../dist";
 const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
 const mainPage = "event";
 const page = "event-organiser";
-const userId = localStorage.getItem('id') || '';
 ---
 
 <get-func data-message={message}>
@@ -48,7 +47,7 @@ const userId = localStorage.getItem('id') || '';
                 </thead>
                 <tbody>
                   {
-                    events.filter((data) => data.organiserId === userId).map((data, index) => (
+                    events.filter((data) => data.organiserId === "78f27d0f-5dcc-4c33-9908-739b6d0de607").map((data, index) => (
                       <tr class="align-middle">
                         <td>{index + 1}</td>
                         <td>{data.eventName}</td>
