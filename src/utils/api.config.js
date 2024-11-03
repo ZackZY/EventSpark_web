@@ -1,10 +1,10 @@
 // Uncomment this to run apps locally
-export const apiDomain = 'http://localhost:3001'
-export const loginDomain = 'http://localhost:3001'
-
-// Uncomment this to commit into Git repo
 // export const apiDomain = 'http://localhost:3001'
 // export const loginDomain = 'http://localhost:3001'
+
+// Uncomment this to commit into Git repo
+export const apiDomain = 'https://e9fxf33txg.execute-api.ap-southeast-1.amazonaws.com'
+export const loginDomain = 'https://bqqn2os7e1.execute-api.ap-southeast-1.amazonaws.com/stg'
 
 export const apiUrlHelper = {
   EventsAPI: apiDomain + '/events/events',
