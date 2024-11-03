@@ -42,7 +42,7 @@ const fetchEventDetails = async (events) => {
 
         // Calculate progress based on "accepted" status
         const totalParticipants = attendees?.length || 0;
-        const acceptedCount = attendees?.filter((p) => p.status === "accepted").length || 0;
+        const acceptedCount = attendees?.filter((p) => p.status !== "invited").length || 0;
         const progress = totalParticipants > 0 ? (acceptedCount / totalParticipants) * 100 : 0;
 
         return { ...event, progress };
