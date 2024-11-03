@@ -2,6 +2,7 @@
 // import { getUserProfiles } from "@components/faker/fake-data.astro";
 import { apiUrlHelper, fetchFromApi } from "../../../utils/api.config";
 import Edit from "@components/organizer-management/edit.astro";
+import moment from "moment";
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
@@ -70,29 +71,41 @@ const page = "main";
                 <tbody>
                   {
                     users && users.length > 0 ? (
-                      users.map((data) => (
-                          <tr class="align-middle">
-                            <td>{data.id}</td>
-                            <td>
-                              <img
-                                src={path + "/assets/img/default-150x150.png"}
-                                alt="Product 1"
-                                class="rounded-circle img-size-32 me-2"
-                              />
-                              {data.name}
-                            </td>
-                            <td>{data.email}</td>
-                            <td>{data.contactNumber}</td>
-                            <td>{data.createdAt}</td>
-                            <td>{data.updatedAt}</td>
-                            <td>
-                              <Edit message={JSON.stringify(data)} />
-                            </td>
-                          </tr>
-                        ))
+                      users.map((data, index) => (
+                        <tr class="align-middle">
+                          <td>{index + 1}</td>
+                          <td>
+                            <img
+                              src={
+                                path + "/assets/img/default-user-160x160.png"
+                              }
+                              alt="Product 1"
+                              class="rounded-circle img-size-32 me-2"
+                            />
+                            {data.name}
+                          </td>
+                          <td>{data.email}</td>
+                          <td>{data.contactNumber}</td>
+                          <td>
+                            {moment
+                              .utc(data.createdAt)
+                              .format("MM/DD/YYYY hh:mm A")}
+                          </td>
+                          <td>
+                            {moment
+                              .utc(data.updatedAt)
+                              .format("MM/DD/YYYY hh:mm A")}
+                          </td>
+                          <td>
+                            <Edit message={JSON.stringify(data)} />
+                          </td>
+                        </tr>
+                      ))
                     ) : (
                       <tr>
-                        <td colspan="7" class="text-center">No users found</td>
+                        <td colspan="7" class="text-center">
+                          No users found
+                        </td>
                       </tr>
                     )
                   }
