@@ -1,0 +1,177 @@
+---
+import Head from "@components/_head.astro";
+const title = "EventSpark | Registration";
+const path = "../../../dist";
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<style>
+  .lockscreen {
+    margin-top: -5%;
+  }
+  .userimg {
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+  }
+</style>
+<script src="../../utils/api.helper.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<html lang="en">
+  <!--begin::Head-->
+  <head>
+    <Head title={title} path={path} />
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="lockscreen bg-body-secondary">
+    <div class="lockscreen-wrapper">
+      <div class="lockscreen-logo">
+        <h2><b>Event Spark</b></h2>
+      </div>
+        {
+          <div class="d-none" id="val">
+            <div class="d-flex justify-content-center">
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: green; font-size: 10rem;">
+                </i>
+              </div>
+
+              <h1 class="help-block text-center"><b>Welcome!</b></h1>
+              <br />
+
+              {/* <h5 class="lockscreen-name" id="userName">userName</h5>
+              <div class="d-flex justify-content-center">
+                <div>
+                  <img
+                    src={path + "/assets/img/default-user-160x160.png"}
+                    alt="User Image"
+                    class="userimg"
+                  />
+                </div>
+              </div>
+              <br />
+
+              <h5 class="help-block text-center" id="eventDetails"></h5>
+              <h5 class="help-block text-center" id="eventDuration"></h5> */}
+          </div>
+
+          <div class="lockscreen-item col-6">
+            <form class="lockscreen-credentials ms-0" id="checkInForm">
+              <div class="input-group">
+                <input type="text" class="form-control shadow-none" id="scan" />
+                <div class="input-group-text border-0 bg-transparent px-1">
+                  <button type="button" class="btn shadow-none" id="clearButton">
+                      <i class="bi bi-trash text-body-secondary"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <script is:inline>
+              (() => {
+                  "use strict";
+
+                  const form = document.getElementById("checkInForm");
+                  const successMessage = document.getElementById("val");
+
+                  const inputField = document.getElementById("scan");
+                  inputField.focus(); // Set focus on the input field
+
+                  inputField.addEventListener("input", handleInputChange);
+
+                  const clearButton = document.getElementById("clearButton");
+                  clearButton.addEventListener("click", () => {
+                      inputField.value = ""; // Clear the input field
+                      inputField.focus(); // Optionally set focus back to the input field
+                  });
+
+                  async function handleInputChange(event) {
+                      if (!inputField.value || !form.checkValidity()) {
+                          return;
+                      }
+
+                      try {
+                          const formEventHash = inputField.value; // Get value from the input field
+                          const checkinResponse = await checkInUser(formEventHash);
+
+                          if (checkinResponse.statusCode === "201") {
+                              handleSuccess();
+                          }
+                      } catch (error) {
+                          console.error("Error during check-in:", error);
+                      }
+                  }
+
+                  async function checkInUser(eventHash) {
+                      const response = await fetch(apiUrlHelper.CheckInAPI, {
+                          method: "POST",
+                          headers: {
+                              "Content-Type": "application/json"
+                          },
+                          body: JSON.stringify({ eventHash })
+                      });
+
+                      if (!response.ok) {
+                          alert("Check in failed. Please check the check in QR Code.");
+                          // throw new Error(`Error: ${response.statusText}`);
+                      }
+
+                      return await response.json();
+                  }
+
+                  function handleSuccess() {
+                      successMessage.classList.remove("d-none");
+                      form.classList.add("d-none");
+                      launchConfetti();
+
+                      setTimeout(() => {
+                          window.location.reload(); // Reload the page after a short delay
+                      }, 5000);
+                  }
+
+                  function launchConfetti() {
+                      const count = randomInRange(200, 400);
+                      const defaults = { origin: { y: 0.75 } };
+
+                      fireConfetti(0.25, { spread: 26, startVelocity: 55, defaults, count });
+                      fireConfetti(0.2, { spread: 60, defaults, count });
+                      fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8, defaults, count });
+                      fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, defaults, count });
+                      fireConfetti(0.1, { spread: 120, startVelocity: 45, defaults, count });
+                  }
+
+                  function randomInRange(min, max) {
+                      return Math.random() * (max - min) + min;
+                  }
+
+                  function fireConfetti(particleRatio, opts) {
+                      confetti({
+                          ...opts.defaults,
+                          ...opts,
+                          particleCount: Math.floor(opts.count * particleRatio),
+                      });
+                  }
+              })();
+            </script>
+          </div>
+        }
+      <br />
+
+      <div class="lockscreen-footer text-center">
+        Copyright © {year} &nbsp;
+        <b
+          ><a
+            href="#"
+            class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+            >EventSpark</a
+          ></b
+        >
+        <br />
+        All rights reserved
+      </div>
+    </div>
+  </body><!--end::Body-->
+</html>
