@@ -1,5 +1,6 @@
 ---
 const { message = "" } = Astro.props;
+const userId = localStorage.getItem('id') || '';
 // npm install @eonasdan/tempus-dominus
 // npm install @fortawesome/fontawesome-free
 ---
@@ -230,7 +231,7 @@ const { message = "" } = Astro.props;
                       }
               
                       const formData = {
-                          organiserId: "78f27d0f-5dcc-4c33-9908-739b6d0de607",
+                          organiserId: userId,
                           eventName: document.getElementById("eventName").value,
                           eventDescription: document.getElementById("eventDescription").value,
                           eventDate: setDateOnly(startDate),
