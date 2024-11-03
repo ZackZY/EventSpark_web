@@ -160,7 +160,7 @@ const { message = "" } = Astro.props;
                       return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
                     }
                     // Update modal label with event name
-                    editModalLabel.textContent = `Edit Event: ${eventDetail.eventName}`;
+                    editModalLabel.textContent = `Edit Event for ${eventDetail.eventName}`;
                     // Populate form fields with fetched data
                     document.getElementById("editEventName").value = eventDetail.eventName || "";
                     document.getElementById("editEventDescription").value = eventDetail.eventDescription || "";
