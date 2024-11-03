@@ -31,7 +31,13 @@ const { message = "" } = Astro.props;
             <input type="hidden" id="editId" value={JSON.parse(message).id} />
             <div class="card-body">
               <div class="row g-3">
-                
+                <div class="col-md-6">
+                  <div class="alert alert-danger m-2" id="alertMessage" role="alert" style="display: none;">
+                    End Date must be later than Start Date.
+                  </div>
+                </div>
+              </div>
+              <div class="row g-3">          
                 <!-- Event Name Input Group -->
                 <div class="col-md-6">
                   <label for="editEventName" class="form-label"><b>Event Name</b></label>
@@ -182,38 +188,72 @@ const { message = "" } = Astro.props;
             
                     const startDate = document.getElementById("editStartDatePicker").value;
                     const endDate = document.getElementById("editEndDatePicker").value;
+
+                    function setDateOnly(datetimeString) {
+                          // Parsing date in DD/MM/YdatetimeStringYYY format
+                          const [datePart, timePart] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Constructing a Date object from parsed parts
+                          const date = new Date(`${year}-${month}-${day}T${timePart}`);
+                          
+                          // Formatting to YYYY-MM-DD
+                          const formattedDay = String(date.getDate()).padStart(2, '0');
+                          const formattedMonth = String(date.getMonth() + 1).padStart(2, '0');
+                          const formattedYear = date.getFullYear();
+                          
+                          return `${formattedYear}-${formattedMonth}-${formattedDay}`;
+                      }
             
-                    function getDateOnly(datetimeString) {
-                        const date = new Date(datetimeString);
-                        const day = String(date.getDate()).padStart(2, '0');
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const year = date.getFullYear();
-                        return `${year}-${month}-${day}`;
+                      function setTimeOnly(datetimeString) {
+                          // Parsing date in DD/MM/YYYY format
+                          const [datePart, timePart, period] = datetimeString.split(" ");
+                          const [day, month, year] = datePart.split("/");
+
+                          // Convert to 24-hour format if necessary
+                          let [hours, minutes] = timePart.split(":");
+                          if (period === "PM" && hours !== "12") hours = (parseInt(hours) + 12).toString();
+                          if (period === "AM" && hours === "12") hours = "00";
+
+                          // Format hours and minutes
+                          const formattedHours = hours.padStart(2, '0');
+                          const formattedMinutes = minutes.padStart(2, '0');
+                          
+                          return `${formattedHours}:${formattedMinutes}`;
+                      }
+            
+                    function parseDateTime(datetimeString) {
+                        // Split date and time parts
+                        const [datePart, timePart, period] = datetimeString.split(" ");
+                        const [day, month, year] = datePart.split("/").map(Number);
+                        let [hours, minutes] = timePart.split(":").map(Number);
+
+                        // Convert to 24-hour format
+                        if (period === "PM" && hours !== 12) hours += 12;
+                        if (period === "AM" && hours === 12) hours = 0;
+
+                        // Create a new Date object
+                        return new Date(year, month - 1, day, hours, minutes);
                     }
-            
-                    function getTimeOnly(datetimeString) {
-                        const date = new Date(datetimeString);
-                        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                    }
-            
-                    if (new Date(endDate) <= new Date(startDate)) {
-                        alert("End Date must be later than Start Date.");
+          
+                    if (parseDateTime(endDate) <= parseDateTime(startDate)) {
+                        document.getElementById("alertMessage").style.display= "block";
                         return;
                     }
-            
+
+                   const eventId = document.getElementById("editId").value
                     const editFormData = {
-                        id: document.getElementById("editId").value,
                         eventName: document.getElementById("editEventName").value,
                         eventDescription: document.getElementById("editEventDescription").value,
-                        eventDate: getDateOnly(startDate),
-                        eventTimeStart: getTimeOnly(startDate),
-                        eventTimeEnd: getTimeOnly(endDate),
+                        eventDate: setDateOnly(startDate),
+                        eventTimeStart: setTimeOnly(startDate),
+                        eventTimeEnd: setTimeOnly(endDate),
                         location: document.getElementById("editLocation").value,
-                        eventType: document.querySelector('input[name="editEventType"]:checked').value
+                        eventType: document.querySelector('input[name="editEventType"]:checked').value,
                     };
             
                     try {
-                        const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editFormData.id, "PUT", editFormData);
+                        const response = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + eventId, "PUT", editFormData);
             
                         if (response) {
                             // Hide the modal immediately after successful response
