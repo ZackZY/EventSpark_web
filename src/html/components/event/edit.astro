@@ -140,6 +140,42 @@ const { message = "" } = Astro.props;
                 "use strict";
             
                 const editForm = document.getElementById("editForm");
+
+                const editModalLabel = document.getElementById("editModalLabel");
+                // Load event details when modal opens
+                document.getElementById("editModal").addEventListener("show.bs.modal", async () => {
+                  const editId = document.getElementById("editId").value;
+                  try {
+                    const eventDetail = await fetchFromApi(apiUrlHelper.EventsAPI + "/" + editId, "GET");
+                    // Helper function to format the date as "dd/mm/yyyy hh:mm AM/PM"
+                    function formatDateTime(datetimeString) {
+                      const date = new Date(datetimeString);
+                      const day = String(date.getUTCDate()).padStart(2, '0');
+                      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                      const year = date.getUTCFullYear();
+                      const hours = date.getUTCHours();
+                      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                      const ampm = hours >= 12 ? 'PM' : 'AM';
+                      const formattedHour = hours % 12 || 12; // Convert 24-hour time to 12-hour time
+                      return `${day}/${month}/${year} ${formattedHour}:${minutes} ${ampm}`;
+                    }
+                    // Update modal label with event name
+                    editModalLabel.textContent = `Edit Event: ${eventDetail.eventName}`;
+                    // Populate form fields with fetched data
+                    document.getElementById("editEventName").value = eventDetail.eventName || "";
+                    document.getElementById("editEventDescription").value = eventDetail.eventDescription || "";
+                    document.getElementById("editStartDatePicker").value = formatDateTime(eventDetail.eventTimeStart);
+                    document.getElementById("editEndDatePicker").value = formatDateTime(eventDetail.eventTimeEnd);
+                    document.getElementById("editLocation").value = eventDetail.eventLocation || "";
+                    
+                    // Set event type radio button
+                    const eventType = (eventDetail.eventType || "PUBLIC").toUpperCase();
+                    document.getElementById("editTypePublic").checked = eventType === "PUBLIC";
+                    document.getElementById("editTypePrivate").checked = eventType === "PRIVATE";
+                  } catch (error) {
+                    console.error("Error fetching event details:", error);
+                  }           
+                });
             
                 editForm.addEventListener("submit", async (event) => {
                     event.preventDefault();
