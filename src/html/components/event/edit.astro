@@ -146,6 +146,8 @@ const { message = "" } = Astro.props;
                 "use strict";
             
                 const editForm = document.getElementById("editForm");
+                document.getElementById("startDatePicker").readOnly = true;
+                document.getElementById("endDatePicker").readOnly = true;
 
                 const editModalLabel = document.getElementById("editModalLabel");
                 // Load event details when modal opens

@@ -172,13 +172,16 @@ const { message = "" } = Astro.props;
                   const form = document.getElementById("createform");
                   const userId = localStorage.getItem('id') || '';
                   console.log("create userId: ", userId);
+                  document.getElementById("startDatePicker").readOnly = true;
+                  document.getElementById("endDatePicker").readOnly = true;
               
                   form.addEventListener("submit", async (event) => {
                       event.preventDefault();
               
                       const startDate = document.getElementById("startDatePicker").value;
                       const endDate = document.getElementById("endDatePicker").value;
-              
+                      
+      
                       function setDateOnly(datetimeString) {
                           // Parsing date in DD/MM/YdatetimeStringYYY format
                           const [datePart, timePart] = datetimeString.split(" ");
