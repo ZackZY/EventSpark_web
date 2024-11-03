@@ -1,11 +1,19 @@
 ---
 const year = new Date().getFullYear();
+const now = new Date();
+
+const currentDate = now.toLocaleDateString("en-GB", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}); // Formats the date as a string
 ---
 
 <!--begin::Footer-->
 <footer class="app-footer">
   <!--begin::To the end-->
-  <div class="float-end d-none d-sm-inline">DMSS Team 7</div>
+  <div class="float-end d-none d-sm-inline">{currentDate}</div>
   <!--end::To the end-->
   <!--begin::Copyright-->
   <strong>

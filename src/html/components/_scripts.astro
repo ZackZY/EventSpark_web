@@ -15,6 +15,41 @@ const adminlteJsUrl = path + "/js/adminlte.js";
 <!--begin::JS for EventSpark API calls-->
 <script src="../../utils/api.helper.js"></script>
 <!--end::JS for EventSpark API calls-->
+<!--begin::Auth Check-->
+<style is:inline>
+  #auth-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<div id="auth-loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!--end::Auth Check-->
 <!--begin::OverlayScrollbars Configure-->
 <script is:inline>
   const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
@@ -23,7 +58,22 @@ const adminlteJsUrl = path + "/js/adminlte.js";
     scrollbarAutoHide: "leave",
     scrollbarClickScroll: true,
   };
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async function () {
+    if (!window.location.pathname.includes('/auth/login')) {
+      try {
+        const isAuthenticated = await window.checkAuth();
+        if (!isAuthenticated) {
+          window.location.href = "/auth/login";
+        } else {
+          document.getElementById('auth-loading-overlay').style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Auth Error:', error);
+        window.location.href = "/auth/login";
+      }
+    } else {
+      document.getElementById('auth-loading-overlay').style.display = 'none';
+    }
     const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
     if (
       sidebarWrapper &&
@@ -40,3 +90,4 @@ const adminlteJsUrl = path + "/js/adminlte.js";
   });
 </script>
 <!--end::OverlayScrollbars Configure-->
+
