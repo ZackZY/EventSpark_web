@@ -123,7 +123,7 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                 </div>
               </div>
               <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-success">
+                <div class="small-box text-bg-warning">
                   <div class="inner">
                     <h3>{upcomingAttendeeEventCount}</h3>
                     <p>Pending Attend</p>
@@ -139,7 +139,7 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                       d="M19 3h-1V1.5a.75.75 0 00-1.5 0V3H7V1.5a.75.75 0 00-1.5 0V3H5a3 3 0 00-3 3v13a3 3 0 003 3h14a3 3 0 003-3V6a3 3 0 00-3-3zm1.5 16a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V9h17v10zM4.5 8V6A1.5 1.5 0 016 4.5h1.5V6a.75.75 0 001.5 0V4.5h8V6a.75.75 0 001.5 0V4.5H18A1.5 1.5 0 0119.5 6v2h-15z"
                     ></path>
                   </svg>
-                  <a href={"/event-attendee.html"} class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                  <a href={"/event-attendee.html"} class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
                     More info <i class="bi bi-link-45deg"></i>
                   </a>
                 </div>
@@ -150,7 +150,7 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
               <div class="col-lg-6">
                 <div class="card mb-4">
                   <div class="card-header">
-                    <h3 class="card-title">Event List for organiser</h3>
+                    <h3 class="card-title">Event List for Organiser</h3>
                   </div>
                   <div class="card-body p-0">
                     <table class="table table-striped">
@@ -159,7 +159,7 @@ const organiserEventsWithDetails = await fetchEventDetails(filteredOrganiserEven
                           <th style="width: 10px">#</th>
                           <th>Event Name</th>
                           <th>Attendance Rate</th>
-                          <th style="width: 40px">Label</th>
+                          <th style="width: 40px"></th>
                         </tr>
                       </thead>
                       <tbody>
