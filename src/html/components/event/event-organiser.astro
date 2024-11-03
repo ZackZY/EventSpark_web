@@ -41,8 +41,9 @@ const page = "event-organiser";
                     <th class="col-1" style="width: 100px;">Type</th>
                     <th class="col-1" style="width: 150px;">Created At</th>
                     <th class="col-1" style="width: 150px;">Updated At</th>
-                    <th class="col-1" style="width: 220px;">Attendee List</th>
-                    <th class="col-1" style="width: 220px;">Actions</th>
+                    <th class="col-1" style="width: 100px;">Attendee</th>
+                    <th class="col-1" style="width: 100px;">Info</th>
+                    <th class="col-1" style="width: 100px;">Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,11 +64,13 @@ const page = "event-organiser";
                         <td>{moment.utc(data.updatedAt).format('MM/DD/YYYY hh:mm A')}</td>
                         <td>
                           <Attendee message={JSON.stringify(data)} />
+                        </td>
+                        <td>
                           <Invite message={JSON.stringify(data)} />
                         </td>
                         <td>             
                           <Edit message={JSON.stringify(data)} />
-                          <Delete message={JSON.stringify(data)} />                         
+                          {/* <Delete message={JSON.stringify(data)} />                          */}
                         </td>
                       </tr>
                     ))

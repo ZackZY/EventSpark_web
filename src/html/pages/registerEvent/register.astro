@@ -249,7 +249,11 @@ const page = "register";
                         // Show the toast notification
                         const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
                         toastElement.addEventListener("hidden.bs.toast", function () {
-                            window.location.href = "/index.html";
+                            if (attendeeId) {
+                                window.location.href = "/index.html";
+                            } else {
+                                window.location.reload();
+                            }
                         });
                         toast.show();
                     }
