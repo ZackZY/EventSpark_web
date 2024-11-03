@@ -4,18 +4,25 @@ const adminlteJsUrl = path + "/js/adminlte.js";
 ---
 
 <!--begin::Third Party Plugin(OverlayScrollbars)-->
-<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-H2VM7BKda+v2Z4+DRy69uknwxjyDRhszjXFhsL4gD3w=" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js"
+  integrity="sha256-H2VM7BKda+v2Z4+DRy69uknwxjyDRhszjXFhsL4gD3w="
+  crossorigin="anonymous"></script>
 <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha256-whL0tQWoY1Ku1iskqPFvmZ+CHsvmRWx/PIoEvIeWh4I=" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+  integrity="sha256-whL0tQWoY1Ku1iskqPFvmZ+CHsvmRWx/PIoEvIeWh4I="
+  crossorigin="anonymous"></script>
 <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha256-YMa+wAM6QkVyz999odX7lPRxkoYAan8suedu4k2Zur8=" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+  integrity="sha256-YMa+wAM6QkVyz999odX7lPRxkoYAan8suedu4k2Zur8="
+  crossorigin="anonymous"></script>
 <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
 <script src={adminlteJsUrl} is:inline></script>
-<!--end::Required Plugin(AdminLTE)-->
-<!--begin::JS for EventSpark API calls-->
+<!--end::Required Plugin(AdminLTE)--><!--begin::JS for EventSpark API calls-->
 <script src="../../utils/api.helper.js"></script>
-<!--end::JS for EventSpark API calls-->
-<!--begin::Auth Check-->
+<!--end::JS for EventSpark API calls--><!--begin::Auth Check-->
 <style is:inline>
   #auth-loading-overlay {
     position: fixed;
@@ -40,8 +47,12 @@ const adminlteJsUrl = path + "/js/adminlte.js";
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
 
@@ -59,20 +70,24 @@ const adminlteJsUrl = path + "/js/adminlte.js";
     scrollbarClickScroll: true,
   };
   window.addEventListener("load", async function () {
-    if (!window.location.pathname.includes('/auth/login')) {
+    if (
+      !window.location.pathname.includes("/auth/login") &&
+      !window.location.pathname.includes("/registerEvent/register")
+    ) {
       try {
         const isAuthenticated = await window.checkAuth();
         if (!isAuthenticated) {
           window.location.href = "/auth/login";
         } else {
-          document.getElementById('auth-loading-overlay').style.display = 'none';
+          document.getElementById("auth-loading-overlay").style.display =
+            "none";
         }
       } catch (error) {
-        console.error('Auth Error:', error);
+        console.error("Auth Error:", error);
         window.location.href = "/auth/login";
       }
     } else {
-      document.getElementById('auth-loading-overlay').style.display = 'none';
+      document.getElementById("auth-loading-overlay").style.display = "none";
     }
     const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
     if (
@@ -90,4 +105,3 @@ const adminlteJsUrl = path + "/js/adminlte.js";
   });
 </script>
 <!--end::OverlayScrollbars Configure-->
-
