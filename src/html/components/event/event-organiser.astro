@@ -9,7 +9,15 @@ import moment from 'moment';
 
 const { message = "" } = Astro.props;
 const path = "../../../dist";
-const events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+let events = [];
+
+try {
+  events = await fetchFromApi(apiUrlHelper.EventsAPI, "GET");
+} catch (error) {
+  console.error("Error fetching events:", error);
+  // Handle the error appropriately, e.g., set an error message or state
+}
+
 const filteredOrganiserEvents = events.filter(
   (data) => data.organiserId === "44b09874-45ac-4558-bd8c-b81b041870e9"
 );
