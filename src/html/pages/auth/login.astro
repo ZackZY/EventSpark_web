@@ -2,12 +2,12 @@
 import Head from "@components/_head.astro";
 import Scripts from "@components/_scripts.astro";
 
-const title = "AdminLTE 4 | Login Page";
+const title = "EventSpark | Login Page";
 const path = "../../../dist";
 const htmlPath = "..";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <!--begin::Head-->
   <head>
@@ -18,7 +18,7 @@ const htmlPath = "..";
   <body class="login-page bg-body-secondary">
     <div class="login-box">
       <div class="login-logo">
-        <a href={htmlPath + "/index.html"}><b>Admin</b>LTE</a>
+        <a href={htmlPath + "/index.html"}><b>Event</b>Spark</a>
       </div>
       <!-- /.login-logo -->
       <div class="card">
@@ -27,7 +27,12 @@ const htmlPath = "..";
 
           <form action={htmlPath + "/index.html"} id="loginForm" method="post">
             <div class="input-group mb-3">
-              <input type="email" class="form-control" id="email" placeholder="Email" />
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Email"
+              />
               <div class="input-group-text">
                 <span class="bi bi-envelope"></span>
               </div>
@@ -97,34 +102,36 @@ const htmlPath = "..";
     <Scripts path={path} />
 
     <script is:inline>
-      document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-        try {
-          const response = await fetchFromApi(apiUrlHelper.LoginAPI, 'POST', {
-            email,
-            password
-          });
-          console.log(response)
-          if (response.user) {
-            localStorage.setItem('name', response.user.name);
-            localStorage.setItem('id', response.user.id);
-            const role = response.user.isAdmin ? 'admin' : 'organiser';
-            localStorage.setItem('role', role);
-            this.submit();
-          } else {
-            alert('Login failed. Please check your credentials.');
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          try {
+            const response = await fetchFromApi(apiUrlHelper.LoginAPI, "POST", {
+              email,
+              password,
+            });
+            console.log(response);
+            if (response.user) {
+              localStorage.setItem("name", response.user.name);
+              localStorage.setItem("id", response.user.id);
+              const role = response.user.isAdmin ? "admin" : "organiser";
+              localStorage.setItem("role", role);
+              this.submit();
+            } else {
+              alert("Login failed. Please check your credentials.");
+            }
+          } catch (error) {
+            console.error("Login failed:", error);
+            alert("Login failed. Please check your credentials.");
           }
-        } catch (error) {
-          console.error('Login failed:', error);
-          alert('Login failed. Please check your credentials.');
-        }
-      });
+        });
     </script>
-    
+
     <!--end::Script-->
   </body><!--end::Body-->
 </html>
