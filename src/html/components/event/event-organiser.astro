@@ -74,13 +74,13 @@ const page = "event-organiser";
                         <td>{index + 1}</td>
                         <td>{data.eventName}</td>
                         <td>{data.eventDescription}</td>
-                        <td>{moment.utc(data.eventDate, "DD/MM/YYYY HH:mm").local().format('MM/DD/YYYY')}</td>
-                        <td>{moment.utc(data.eventTimeStart, "DD/MM/YYYY HH:mm").local().format('hh:mm A')}</td>
-                        <td>{moment.utc(data.eventTimeEnd, "DD/MM/YYYY HH:mm").local().format('hh:mm A')}</td>
+                        <td>{moment.utc(data.eventDate).local().format('MM/DD/YYYY')}</td>
+                        <td>{moment.utc(data.eventTimeStart).local().format('hh:mm A')}</td>
+                        <td>{moment.utc(data.eventTimeEnd).local().format('hh:mm A')}</td>
                         <td>{data.eventLocation}</td>
                         <td>{data.eventType.toUpperCase()}</td>
-                        <td>{moment.utc(data.createdAt, "DD/MM/YYYY HH:mm").local().format('MM/DD/YYYY hh:mm A')}</td>
-                        <td>{moment.utc(data.updatedAt, "DD/MM/YYYY HH:mm").local().format('MM/DD/YYYY hh:mm A')}</td>
+                        <td>{moment.utc(data.createdAt).local().format('MM/DD/YYYY hh:mm A')}</td>
+                        <td>{moment.utc(data.updatedAt).local().format('MM/DD/YYYY hh:mm A')}</td>
                         <td>
                           <Attendee message={JSON.stringify(data)} />
                         </td>
