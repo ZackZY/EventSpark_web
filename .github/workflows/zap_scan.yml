@@ -1,11 +1,13 @@
-name: OWASP ZAP baseline scan
+name: Scheduled OWASP ZAP baseline scan
 
 on:
+  schedule:
+    # Runs every day At 01:00.
+    - cron:  '0 1 * * *'
   workflow_run:
     workflows: [Deploy to Amazon ECS]
     types:
       - completed
-
   workflow_dispatch:
 
 jobs:
