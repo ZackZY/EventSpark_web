@@ -37,13 +37,14 @@ describe("Side Nav Bar", () => {
     // expect(navItems.length).toBe(3); // 3 visible nav items (excluding the nested ones)
 
     // Verify each nav item content
-    expect(navItems[0].querySelector("p").textContent.trim()).toBe("Events");
-    expect(navItems[1].querySelector("p").textContent.trim()).toBe(
+    expect(navItems[0].querySelector("p").textContent.trim()).toBe("Check In");
+    expect(navItems[1].querySelector("p").textContent.trim()).toBe("Events");
+    expect(navItems[2].querySelector("p").textContent.trim()).toBe(
+      "Manage Events",
+    );
+    expect(navItems[3].querySelector("p").textContent.trim()).toBe(
       "Administrator",
     );
-    expect(navItems[2].querySelector("p").textContent.trim()).toBe(
-      "Manage Organizers",
-    );
-    expect(navItems[3].querySelector("p").textContent.trim()).toBe("Analytics");
+    expect(navItems[4].querySelector("p").textContent.trim()).toBe("Manage Organizers");
   });
 });

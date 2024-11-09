@@ -62,3 +62,8 @@ You can also use script to auto fix some lint error:
 ```bash
 npm run lint:fix
 ```
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ZackZY_EventSpark_web&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ZackZY_EventSpark_web)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ZackZY_EventSpark_web&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ZackZY_EventSpark_web)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ZackZY_EventSpark_web&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ZackZY_EventSpark_web)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ZackZY_EventSpark_web&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ZackZY_EventSpark_web)
